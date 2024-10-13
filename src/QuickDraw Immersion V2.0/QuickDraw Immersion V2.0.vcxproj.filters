@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="keyboard.cpp" />
+    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="script.cpp" />
+    <ClCompile Include="CREATORPED\creatorped.cpp">
+      <Filter>creatorped</Filter>
+    </ClCompile>
+    <ClCompile Include="SPAWNPED\spawnped.cpp">
+      <Filter>spawnped</Filter>
+    </ClCompile>
+    <ClCompile Include="HASHRANDOM\hashrandom.cpp">
+      <Filter>hashrandom</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="MOD\quickdraw.cpp">
+      <Filter>mod</Filter>
+    </ClCompile>
+    <ClCompile Include="MOD\setaccuracy.cpp">
+      <Filter>mod</Filter>
+    </ClCompile>
+    <ClCompile Include="MOD\twirl.cpp">
+      <Filter>mod</Filter>
+    </ClCompile>
+    <ClCompile Include="GANG\odriscollsspawn.cpp">
+      <Filter>gang</Filter>
+    </ClCompile>
+    <ClCompile Include="CREATORPED\setpresetped.cpp">
+      <Filter>creatorped</Filter>
+    </ClCompile>
+    <ClCompile Include="MENU\menu.cpp">
+      <Filter>menu</Filter>
+    </ClCompile>
+    <ClCompile Include="BLIP\blips.cpp">
+      <Filter>blip</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inc\types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\enums.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\natives.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h" />
+    <ClInclude Include="..\..\inc\main.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h" />
+    <ClInclude Include="script.h" />
+    <ClInclude Include="CREATORPED\creatorped.h">
+      <Filter>creatorped</Filter>
+    </ClInclude>
+    <ClInclude Include="SPAWNPED\spawnped.h">
+      <Filter>spawnped</Filter>
+    </ClInclude>
+    <ClInclude Include="HASHRANDOM\hashrandom.h">
+      <Filter>hashrandom</Filter>
+    </ClInclude>
+    <ClInclude Include="header.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="MOD\quickdraw.h">
+      <Filter>mod</Filter>
+    </ClInclude>
+    <ClInclude Include="MOD\setaccuracy.h">
+      <Filter>mod</Filter>
+    </ClInclude>
+    <ClInclude Include="MOD\twirl.h">
+      <Filter>mod</Filter>
+    </ClInclude>
+    <ClInclude Include="GANG\odriscollsspawn.h">
+      <Filter>gang</Filter>
+    </ClInclude>
+    <ClInclude Include="CREATORPED\setpresetped.h">
+      <Filter>creatorped</Filter>
+    </ClInclude>
+    <ClInclude Include="MENU\gamefunctions.h">
+      <Filter>menu</Filter>
+    </ClInclude>
+    <ClInclude Include="MENU\menuconstructor.h">
+      <Filter>menu</Filter>
+    </ClInclude>
+    <ClInclude Include="BLIP\blips.h">
+      <Filter>blip</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{fe82bd4a-2d14-486a-8be5-8bf6b50a2414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="creatorped">
+      <UniqueIdentifier>{03bf8032-58ea-4405-82db-ddc49b5bdce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="spawnped">
+      <UniqueIdentifier>{05bce188-2bcf-407b-8dc1-96d73406e78d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hashrandom">
+      <UniqueIdentifier>{a03f285b-5d05-4101-af28-3b37d788d784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mod">
+      <UniqueIdentifier>{c6f191bc-df99-41ad-8f5f-153bbbf23762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gang">
+      <UniqueIdentifier>{2ed5c940-862e-4881-bbf8-48bdeaf6bcf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="menu">
+      <UniqueIdentifier>{6f1ac5d4-3238-4b1d-aba4-7bb7c0d241bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="blip">
+      <UniqueIdentifier>{2a3044d0-e421-4e4c-88a9-882ce3e6e0d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
