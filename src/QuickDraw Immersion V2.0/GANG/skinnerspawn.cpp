@@ -1,68 +1,67 @@
 #include "..\header.h"
 
-std::vector<std::string> availableOdriscollList = odriscoll;  // Lista de Peds disponíveis para gerar
-std::vector<std::string> usedOdriscollList;  // Lista de Peds já utilizados
+std::vector<std::string> availableSkinnerList = skinner;  // Lista de Peds disponíveis para gerar
+std::vector<std::string> usedSkinnerList;  // Lista de Peds já utilizados
 
-void odriscollGroup(Ped ped1, Ped ped2) {
-    int odriscollId = PED::CREATE_GROUP(0);
+void skinnerGroup(Ped ped1, Ped ped2) {
+    int skinnerId = PED::CREATE_GROUP(0);
 
     if (ENTITY::DOES_ENTITY_EXIST(ped1) && !ENTITY::IS_ENTITY_DEAD(ped1)) {
 
-        PED::SET_PED_AS_GROUP_LEADER(ped1, odriscollId, false);
-        PED::SET_GROUP_FORMATION(odriscollId, 3);
-        PED::SET_GROUP_FORMATION_SPACING(odriscollId, 2.0f, 1.0f, 2.0f);
-        DECORATOR::DECOR_SET_INT(ped1, "odriscolls", 0);
+        PED::SET_PED_AS_GROUP_LEADER(ped1, skinnerId, false);
+        PED::SET_GROUP_FORMATION_SPACING(skinnerId, 2.0f, 1.0f, 2.0f);
+        DECORATOR::DECOR_SET_INT(ped1, "skinner", 0);
     }
 
     if (ENTITY::DOES_ENTITY_EXIST(ped2) && !ENTITY::IS_ENTITY_DEAD(ped2)) {
 
-        PED::SET_PED_AS_GROUP_MEMBER(ped2, odriscollId);
-        PED::SET_GROUP_FORMATION(odriscollId, 3);
-        PED::SET_GROUP_FORMATION_SPACING(odriscollId, 2.0f, 1.0f, 2.0f);
-        DECORATOR::DECOR_SET_INT(ped2, "odriscolls", 0);
+        PED::SET_PED_AS_GROUP_MEMBER(ped2, skinnerId);
+        PED::SET_GROUP_FORMATION(skinnerId, 3);
+        PED::SET_GROUP_FORMATION_SPACING(skinnerId, 2.0f, 1.0f, 2.0f);
+        DECORATOR::DECOR_SET_INT(ped2, "skinner", 0);
     }
 
-    PED::SET_RELATIONSHIP_BETWEEN_GROUPS(4, REL_GANG_ODRISCOLL, RELGROUPHASH_PLAYER);
+    PED::SET_RELATIONSHIP_BETWEEN_GROUPS(4, REL_GANG_SKINNER_BROTHERS, RELGROUPHASH_PLAYER);
 }
 
 // Função para gerar um Ped aleatório da lista e remover o modelo após o uso
-std::string GetRandomOdriscollHash() {
+std::string GetRandomSkinnerHash() {
 
     // Semente para o gerador de números aleatórios
     std::srand(static_cast<unsigned int>(std::time(0)));
 
     // Verificar se ainda há Peds disponíveis na lista
-    if (availableOdriscollList.empty()) {
+    if (availableSkinnerList.empty()) {
         logMessage("All O'Driscolls used, resetting the list.");
         // Reiniciar a lista se todos os Peds já foram gerados
-        availableOdriscollList = odriscoll;
-        usedOdriscollList.clear();  // Limpa os Peds usados
+        availableSkinnerList = skinner;
+        usedSkinnerList.clear();  // Limpa os Peds usados
     }
 
     // Obter um índice aleatório
-    int randomIndex = std::rand() % availableOdriscollList.size();
+    int randomIndex = std::rand() % availableSkinnerList.size();
 
     // Obter o hash correspondente ao índice aleatório
-    std::string selectedOdriscollHash = availableOdriscollList[randomIndex];
+    std::string selectedSkinnerHash = availableSkinnerList[randomIndex];
 
-    logMessage("O'Driscoll selected: " + selectedOdriscollHash);
+    logMessage("O'Driscoll selected: " + selectedSkinnerHash);
 
     // Remover o modelo da memória para evitar duplicação
-    Hash pedModel = MISC::GET_HASH_KEY(selectedOdriscollHash.c_str());
+    Hash pedModel = MISC::GET_HASH_KEY(selectedSkinnerHash.c_str());
     STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(pedModel);
 
     // Mover o Ped selecionado para a lista de usados
-    usedOdriscollList.push_back(selectedOdriscollHash);
+    usedSkinnerList.push_back(selectedSkinnerHash);
 
     // Remover o Ped selecionado da lista para não gerar o mesmo
-    availableOdriscollList.erase(availableOdriscollList.begin() + randomIndex);
+    availableSkinnerList.erase(availableSkinnerList.begin() + randomIndex);
 
     // Retornar o hash do Ped
-    return selectedOdriscollHash;
+    return selectedSkinnerHash;
 }
 
 // Função para mover dois peds montados para uma coordenada específica
-void OdriscollsMountSpawn() {
+void SkinnerMountSpawn() {
 
     // ID do jogador
     Player player = PLAYER::PLAYER_ID();
@@ -85,11 +84,11 @@ void OdriscollsMountSpawn() {
     Hash horseHash2 = MISC::GET_HASH_KEY(randomHorse2.c_str());
 
     // Gerar hash para os O'Driscoll aleatórios
-    std::string randomOdriscoll1 = GetRandomOdriscollHash();
-    Hash odriscollHash1 = MISC::GET_HASH_KEY(randomOdriscoll1.c_str());
+    std::string randomSkinner1 = GetRandomSkinnerHash();
+    Hash skinnerHash1 = MISC::GET_HASH_KEY(randomSkinner1.c_str());
 
-    std::string randomOdriscoll2 = GetRandomOdriscollHash();
-    Hash odriscollHash2 = MISC::GET_HASH_KEY(randomOdriscoll2.c_str());
+    std::string randomSkinner2 = GetRandomSkinnerHash();
+    Hash skinnerHash2 = MISC::GET_HASH_KEY(randomSkinner2.c_str());
 
     // Criando os cavalos aleatórios
     Ped horse1 = createPed(horseHash1, getRandomPedPositionInRange(playerPos, 80));
@@ -101,13 +100,13 @@ void OdriscollsMountSpawn() {
     giveComboSaddleToHorse(horse2);
 
     // Criar os peds montados em seus respectivos cavalos
-    Ped ped1 = pedMount(odriscollHash1, horse1, true, playerPos, 80);
-    Ped ped2 = pedMount(odriscollHash2, horse2, true, playerPos, 80);
+    Ped ped1 = pedMount(skinnerHash1, horse1, true, playerPos, 80);
+    Ped ped2 = pedMount(skinnerHash2, horse2, true, playerPos, 80);
     logMessage("Peds mounted on horses.");
     WAIT(4500);
 
     // Definir a personalidade agressiva e permitir interação
-    odriscollGroup(ped1, ped2);
+    skinnerGroup(ped1, ped2);
     personalityPed(ped1);
     personalityPed(ped2);
     ConfigurePedInteraction(ped1);
@@ -209,7 +208,7 @@ void OdriscollsMountSpawn() {
                     ENTITY::DELETE_ENTITY(&horse2);
                 }
                 // Reiniciar o script
-                OdriscollsMountSpawn();
+                SkinnerMountSpawn();
             }
         }
     }

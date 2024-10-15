@@ -9,6 +9,11 @@ int selectedSecond = 0;  // Segundo inicial
 bool bPauseTime = false; // Para pausar ou despausar o tempo
 bool isTimePaused = false; // Inicia com false, pois o tempo não está pausado inicialmente
 
+void OpenWebsite() {
+    const char* url = "https://www.patreon.com/toddyclipsgg"; // Defina aqui o site que você quer abrir
+    ShellExecute(0, "open", url, NULL, NULL, SW_SHOWNORMAL); // Abre o navegador no site
+}
+
 // Função para obter a hora atual e atualizar as variáveis
 void UpdateCurrentTime() {
     selectedHour = CLOCK::GET_CLOCK_HOURS();
@@ -121,15 +126,16 @@ void startmenu()
     case Main_Menu:
         // Define o título e cabeçalho do menu principal
         addTitle("QUICKDRAW");
-        addHeader("Follow me @toddyclipsgg");
+        addHeader("Mod by Toddyclipsgg.");
+        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
         // Adiciona opção para acessar o Submenu 1
         addSubmenuOption("Gun Tricks", Submenu1, [] { PrintSubtitle("Select your Gun Tricks.\nFavorite whenever you want, whenever you want!"); });
         // Adiciona opção para acessar o Submenu 2
-        addSubmenuOption("Change Weather", Submenu2, [] { PrintSubtitle("Function for cinematic purposes only."); });
-        // Adiciona opção para acessar o Submenu 3
         addSubmenuOption("Change Time", Submenu3, [] { PrintSubtitle("Function for cinematic purposes only."); });
         // Adiciona opção para acessar o Submenu 3
-        // addSubmenuOption("About QuickDraw", UpdateText, [] { PrintSubtitle("Mod Updates Summary!"); });
+        addSubmenuOption("Change Weather", Submenu2, [] { PrintSubtitle("Function for cinematic purposes only."); });
+        // Adiciona opção para acessar o Submenu 4
+        addSubmenuOption("Mod updates", Updates, [] { PrintSubtitle("Mod Updates Summary!"); });
         // Adiciona opção para ativar/desativar o modo Deus
         // addBoolOption("Godmode", Godmode, [] {Godmode = !Godmode; });
         // Adiciona opção para ativar/desativar a invisibilidade do jogador
@@ -144,8 +150,8 @@ void startmenu()
 
     case Submenu1:
         // Define o título do Submenu 1
-        addTitle("TRICKS");
-        addHeader("Follow me @toddyclipsgg");
+        addTitle("GUN TRICKS");
+        addHeader("Mod by Toddyclipsgg.");
         addOption("Reverse Spin", [] {
             selected_single_variation = 0;
             SetGunTrickAnimation(selected_single_variation);
@@ -170,12 +176,13 @@ void startmenu()
             selected_single_variation = 5;
             SetGunTrickAnimation(selected_single_variation);
             });
+        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
         break;
 
     case Submenu2:
         // Define o título do Submenu 2
-        addTitle("WEATHER");
-        addHeader("Follow me @toddyclipsgg");
+        addTitle("CHANGE WEATHER");
+        addHeader("Mod by Toddyclipsgg.");
         addOption("High Pressure", [] { SetWeather(MISC::GET_HASH_KEY("HIGHPRESSURE"), "High Pressure"); });
         addOption("Rain", [] { SetWeather(MISC::GET_HASH_KEY("RAIN"), "Rain"); });
         addOption("Snow", [] { SetWeather(MISC::GET_HASH_KEY("SNOW"), "Snow"); });
@@ -197,23 +204,27 @@ void startmenu()
         addOption("Sandstorm", [] { SetWeather(MISC::GET_HASH_KEY("SANDSTORM"), "Sandstorm"); });
         addOption("Overcast Dark", [] { SetWeather(MISC::GET_HASH_KEY("OVERCASTDARK"), "Overcast Dark"); });
         addOption("Ground Blizzard", [] { SetWeather(MISC::GET_HASH_KEY("GROUNDBLIZZARD"), "Ground Blizzard"); });
+        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
         break;
 
     case Submenu3:
-        addTitle("TIME");
+        addTitle("CHANGE TIME");
         Update();
         addVectorOption("Hour", &selectedHour, 1, 0, 23); // Seleção de hora
         addVectorOption("Minute", &selectedMinute, 1, 0, 59); // Seleção de minuto
         addVectorOption("Second", &selectedSecond, 1, 0, 59); // Seleção de segundo
         addBoolOption("Pause Time", bPauseTime, PauseTime); // Pausa o tempo
+        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
         break;
 
-    case UpdateText:
-        addTitle("UPDATE");
-        addHeader("Follow me @toddyclipsgg");
-        addUpdate("V2.0 QuickDraw from 0.4 ms to 0.2 ms.");
-        addUpdate("V2.0 Gun Tricks from 0.9 ms to 0.5 ms.");
-        addUpdate("V2.0 Added the O'Driscolls");
+    case Updates:
+        addTitle("UPDATES");
+        addHeader("Mod by Toddyclipsgg.");
+        addUpdate("Update Quickdraw 4ms to 2ms.");
+        addUpdate("Update Gun Tricks 9ms to 5ms.");
+        addUpdate("Simpler and more intuitive menu.");
+        addUpdate("Add mounted gang O'driscoll.");
+        addOption("Exclusive Features, Instant Upgrade. Click to Unlock!", OpenWebsite);
         break;
     }
     resetVars(); // Reseta variáveis do menu

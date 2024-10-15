@@ -8,8 +8,8 @@ void main() {
 
     while (true) {
 
-        OdriscollsMountSpawn();
-        WAIT(300000);
+        spawnGroupManager();
+        WAIT(0);
     }
 }
 #pragma warning(default:4326)

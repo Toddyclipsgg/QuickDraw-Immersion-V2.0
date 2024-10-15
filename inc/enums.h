@@ -8,7 +8,7 @@ enum Submenus {
 	Submenu1,
 	Submenu2,
 	Submenu3,
-	UpdateText,
+	Updates,
 };
 
 enum DrivingStyle : int

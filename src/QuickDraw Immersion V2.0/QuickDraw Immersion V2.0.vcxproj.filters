@@ -36,6 +36,15 @@
     <ClCompile Include="BLIP\blips.cpp">
       <Filter>blip</Filter>
     </ClCompile>
+    <ClCompile Include="GANG\lemoynespawn.cpp">
+      <Filter>gang</Filter>
+    </ClCompile>
+    <ClCompile Include="GANG\spawngroupmanager.cpp">
+      <Filter>gang\spawngroupmanager</Filter>
+    </ClCompile>
+    <ClCompile Include="GANG\skinnerspawn.cpp">
+      <Filter>gang</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\types.h">
@@ -90,6 +99,15 @@
     <ClInclude Include="BLIP\blips.h">
       <Filter>blip</Filter>
     </ClInclude>
+    <ClInclude Include="GANG\lemoynespawn.h">
+      <Filter>gang</Filter>
+    </ClInclude>
+    <ClInclude Include="GANG\spawngroupmanager.h">
+      <Filter>gang\spawngroupmanager</Filter>
+    </ClInclude>
+    <ClInclude Include="GANG\skinnerspawn.h">
+      <Filter>gang</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -115,6 +133,9 @@
     </Filter>
     <Filter Include="blip">
       <UniqueIdentifier>{2a3044d0-e421-4e4c-88a9-882ce3e6e0d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gang\spawngroupmanager">
+      <UniqueIdentifier>{7d4cd143-6a5c-449d-8918-b888d2f1c1fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 #include "header.h"
 
+std::vector<Entity> globalEntityList;
+
 // Função para calcular distância 3D entre o ped e as coordenadas fornecidas
 float CalcularDistancia(Vector3 pedCoords, Vector3 destinoCoords) {
     return BUILTIN::VDIST(pedCoords.x, pedCoords.y, pedCoords.z, destinoCoords.x, destinoCoords.y, destinoCoords.z);
@@ -48,8 +50,8 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
                 else {
                     // Verificar se o ped está parado por mais de 5 segundos
                     int stoppedDuration = BUILTIN::TIMERA() - pedStopTimes[*it];
-                    if (stoppedDuration > 10000) {  // Mais de 5 segundos (5000 ms)
-                        logMessage("Ped has been stopped for over 10 seconds, deleting entity immediately.");
+                    if (stoppedDuration > 6000) {  // Mais de 7 segundos (7000 ms)
+                        logMessage("Ped has been stopped for over 7 seconds, deleting entity immediately.");
                         ENTITY::DELETE_ENTITY(&(*it));  // Delete the entity immediately
                         it = entities.erase(it);  // Remover entidade da lista
                         pedStopTimes.erase(*it);  // Remover ped da lista de tempos

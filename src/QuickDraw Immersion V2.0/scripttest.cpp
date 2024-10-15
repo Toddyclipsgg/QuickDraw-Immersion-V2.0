@@ -743,3 +743,96 @@ void ButtonMonitoring()
         }
     }
 }
+
+/*
+// Lista de fontes disponíveis
+const std::vector<const char*> FontList = { "body", "body1", "catalog1", "catalog2", "catalog3", "catalog4", "catalog5", "chalk",
+"Debug_BOLD", "FixedWidthNumbers", "Font5", "gamername", "handwritten", "ledger", "RockstarTAG", "SOCIAL_CLUB_COND_BOLD", "title", "wantedPostersGeneric" };
+
+// Função para desenhar uma sprite (imagem 2D) na tela
+void NTDrawSprite(const char* category, const char* sprite, float x, float y, float scalex, float scaley, float rotation, int r, int g, int b, int a)
+{
+    // Calcula as coordenadas do centro da sprite
+    float fX = x + scalex / 2;
+    float fY = y + scaley / 2;
+
+    // Verifica se a textura da sprite foi carregada, se não, solicita o carregamento
+    if (!TXD::HAS_STREAMED_TEXTURE_DICT_LOADED(sprite))
+        TXD::REQUEST_STREAMED_TEXTURE_DICT(sprite, 0);
+
+    // Desenha a sprite na tela com os parâmetros fornecidos
+    GRAPHICS::DRAW_SPRITE(category, sprite, fX, fY, scalex, scaley, rotation, r, g, b, a, 1);
+
+    // Libera a textura após ser usada, marcando-a como não mais necessária
+    TXD::SET_STREAMED_TEXTURE_DICT_AS_NO_LONGER_NEEDED(category);
+}
+
+// Função para desenhar um texto na tela com fonte personalizada
+void NTdraw_TextWithFont(const char* text, float x, float y, int r, int g, int b, int a, int fontIndex, bool centered = false, float sx = 0.342f, float sy = 0.342f)
+{
+    // Define a cor do texto com base nos parâmetros RGBA fornecidos
+    UIDEBUG::_BG_SET_TEXT_COLOR(r, g, b, a);
+
+    // Define a escala do texto (tamanho) com base nos valores de sx e sy
+    UIDEBUG::_BG_SET_TEXT_SCALE(sx, sy);
+
+    // Define a fonte com base no índice fornecido
+    const char* fontName = FontList[fontIndex];
+
+    // Cria o texto formatado com a fonte selecionada
+    std::string formatText = "<FONT FACE='$" + std::string(fontName) + "'>~s~" + std::string(text) + "</FONT>";
+
+    // Define se o texto deve ser centralizado
+    invoke<Void>(0xBE5261939FBECB8C, centered);
+
+    // Converte o texto para um formato literal string (usado pelo jogo)
+    const char* literalString = MISC::VAR_STRING(10, "LITERAL_STRING", formatText.c_str());
+
+    // Desenha o texto nas coordenadas fornecidas (x, y)
+    UIDEBUG::_BG_DISPLAY_TEXT(literalString, x, y);
+}
+
+// Função para desenhar um retângulo colorido na tela
+void NTdrawRect(float x, float y, float width, float height, int r, int g, int b, int a)
+{
+    // Calcula as coordenadas do centro do retângulo
+    float fX = x + width / 2;
+    float fY = y + height / 2;
+
+    // Desenha o retângulo na tela com as dimensões e cor especificadas
+    GRAPHICS::DRAW_RECT(fX, fY, width, height, r, g, b, a, true, true);
+}
+
+// Função para exibir uma notificação personalizada quando o jogador entra no jogo
+void ShowWelcomeNotification()
+{
+    // Dimensões e posição da notificação
+    float NTX = 0.052f;       // Posição X (centro da tela)
+
+    // Desenha o fundo da notificação (retângulo)
+    NTdrawRect(NTX, 0.050f, 0.260f, 0.212f, 0, 0, 0, 255);
+
+    // Desenha o ícone (sprite)
+    // NTDrawSprite("generic_textures", "hud_menu_4a", NTX, 0.131f + 0.027f, 0.260f, 0.002f, 0, 255, 255, 255, 255);
+
+    // Configurações de titulo
+    const char* titleNT = "QuickDraw Immersion V2.0!";
+
+    // Desenha o titulo
+    NTdraw_TextWithFont(titleNT, NTX + 0.13f, 0.066f, 255, 255, 255, 255, 16, true, 0.6f, 0.6f);
+
+    // Configurações de texto
+    const char* textNT1 = "QuickDraw Immersion V2.0!";
+    const char* textNT2 = "QuickDraw Immersion V2.0!";
+    const char* textNT3 = "QuickDraw Immersion V2.0!";
+    const char* textNT4 = "QuickDraw Immersion V2.0!";
+    const char* textNT5 = "QuickDraw Immersion V2.0!";
+
+    // Desenha textos
+    NTdraw_TextWithFont(textNT1, NTX + 0.13f, 0.096f, 255, 255, 255, 255, 16, true, 0.4f, 0.4f);
+    NTdraw_TextWithFont(textNT2, NTX + 0.13f, 0.126f, 255, 255, 255, 255, 16, true, 0.4f, 0.4f);
+    NTdraw_TextWithFont(textNT3, NTX + 0.13f, 0.146f, 255, 255, 255, 255, 16, true, 0.4f, 0.4f);
+    NTdraw_TextWithFont(textNT4, NTX + 0.13f, 0.166f, 255, 255, 255, 255, 16, true, 0.4f, 0.4f);
+    NTdraw_TextWithFont(textNT5, NTX + 0.13f, 0.186f, 255, 255, 255, 255, 16, true, 0.4f, 0.4f);
+}
+*/

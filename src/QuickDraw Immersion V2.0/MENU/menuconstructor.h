@@ -93,17 +93,17 @@ void addOption(const char* option, void (func)() = NULLVOID) {
     }
 }
 
-// Função para criar o submenu de atualizações
-void addUpdate(const char* updateText) {
+// Função para adicionar uma opção ao menu
+void addUpdate(const char* text) {
     optionCount++; // Incrementa a contagem de opções
     // Verifica se a opção atual está dentro dos limites do menu
     if (currentOption <= currentMenuMaxOptions && optionCount <= currentMenuMaxOptions && currentOption >= currentMenuMinOptions && optionCount >= currentMenuMinOptions) {
-        // Exibe o texto de atualizações
-        draw_Text(updateText, menuX + 0.007f, 0.131f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 255, 255, 255, 255);
+        // Desenha a opção no menu
+        draw_Text(text, menuX + 0.007f, 0.131f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 255, 255, 255, 255);
         drawRect(menuX, 0.124f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 0.260f, 0.038f, 0, 0, 0, 190);
         // Se a opção atual for a que está sendo desenhada, desenha um fundo especial
         if (currentOption == optionCount) {
-            DrawSprite("generic_textures", "selection_box_bg_1d", menuX, 0.124f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 0.260f, 0.038f, 0, 0, 0, 0, 0);
+            DrawSprite("generic_textures", "selection_box_bg_1d", menuX, 0.124f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 0.260f, 0.038f, 0, 255, 0, 0, 190);
         }
     }
 }
