@@ -836,3 +836,128 @@ void ShowWelcomeNotification()
     NTdraw_TextWithFont(textNT5, NTX + 0.13f, 0.186f, 255, 255, 255, 255, 16, true, 0.4f, 0.4f);
 }
 */
+
+// Função para mover dois peds montados para uma coordenada específica
+void OdriscollsMountSpawn() {
+
+    // ID do jogador
+    Player player = PLAYER::PLAYER_ID();
+    Ped playerPed = PLAYER::PLAYER_PED_ID();
+
+    // check if player ped exists and control is on (e.g. not in a cutscene)
+    if (!ENTITY::DOES_ENTITY_EXIST(playerPed) || !PLAYER::IS_PLAYER_CONTROL_ON(player)) {
+        return;
+    }
+
+    // Pega as coordenadas atuais do jogador
+    Vector3 playerPos = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
+    logMessage("Player coordinates captured.");
+
+    // Gerar hash para os cavalos aleatórios
+    std::string randomHorse = GetRandomHorseHash();
+    Hash horseHash = MISC::GET_HASH_KEY(randomHorse.c_str());
+
+    std::string randomOdriscoll = GetRandomOdriscollHash();
+    Hash odriscollHash = MISC::GET_HASH_KEY(randomOdriscoll.c_str());
+
+    // Criando os cavalos aleatórios
+    Ped horse1 = createPed(horseHash, getRandomPedPositionInRange(playerPos, 80));
+    Ped horse2 = createPed(horseHash, getRandomPedPositionInRange(playerPos, 80));
+    logMessage("Horses created.");
+
+    // Atribuir sela aos cavalos
+    giveComboSaddleToHorse(horse1);
+    giveComboSaddleToHorse(horse2);
+
+    // Criar os peds montados em seus respectivos cavalos
+    Ped ped1 = pedMount(odriscollHash, horse1, true, playerPos, 80);
+    Ped ped2 = pedMount(odriscollHash, horse2, true, playerPos, 80);
+    logMessage("Peds mounted on horses.");
+    WAIT(1000);
+
+    // Definir a personalidade agressiva e permitir interação
+    odriscollGroup(ped1, ped2);
+    personalityPed(ped1);
+    personalityPed(ped2);
+    ConfigurePedInteraction(ped1);
+    ConfigurePedInteraction(ped2);
+    logMessage("Peds personality set and interactions configured.");
+    WAIT(1000);
+
+    // Verifica se ambos os peds (ped e cavalo) existem e estão vivos
+    if (ENTITY::DOES_ENTITY_EXIST(ped1) && !ENTITY::IS_ENTITY_DEAD(ped1) &&
+        ENTITY::DOES_ENTITY_EXIST(ped2) && !ENTITY::IS_ENTITY_DEAD(ped2)) {
+
+        Vector3 ped1Coords = ENTITY::GET_ENTITY_COORDS(ped1, true, false);  // Pega as coordenadas atuais do ped1
+        float distanciaMaxima = 1500.0f;  // Defina a distância máxima "perto o suficiente"
+        float distanciaMinima = 500.0f;   // Defina a distância mínima "longe o suficiente"
+        float distancia = 0.0f;
+        int tentativasMax = 25;  // Limite de tentativas para evitar loop infinito
+        int tentativaAtual = 0;
+
+        std::pair<std::string, Vector3> destino;
+
+        // Gerar novas coordenadas até encontrar uma suficientemente perto e longe o suficiente
+        while (tentativaAtual < tentativasMax) {
+            destino = GetRandomCoord();  // Gerar uma coordenada aleatória
+            distancia = CalcularDistancia(ped1Coords, destino.second);  // Calcular a distância a partir do ped1
+
+            // Verifica se a distância está entre 500 e 1500 metros
+            if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
+                break;  // Coordenada está dentro do critério de distância
+            }
+
+            tentativaAtual++;
+        }
+
+        // Se encontrou uma coordenada dentro do critério
+        if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
+            float x = destino.second.x;
+            float y = destino.second.y;
+            float z = destino.second.z;
+
+            // Verifica se o ponto é navegável
+            if (PATHFIND::IS_POINT_ON_ROAD(x, y, z, ped1)) {
+                logMessage("Point is navigable, moving Ped 1.");
+
+                TASK::TASK_MOVE_FOLLOW_ROAD_USING_NAVMESH(ped1, 1.001f, x, y, z, 0);
+                ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped1, true);
+
+
+                // Mover o cavalo diretamente para a coordenada de destino
+                invoke<Void>(0x79482C12482A860D, ped2, 1.001f, ped2, 0);
+                ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped2, true);
+            }
+        }
+        else {
+            // Se o ponto não for navegável, exclui os pedestres e cavalos e reinicia o script
+            logMessage("Point is not navigable, deleting entities and restarting.");
+
+            // Excluir os pedestres ped1 e ped2
+            if (ENTITY::DOES_ENTITY_EXIST(ped1)) {
+                ENTITY::DELETE_ENTITY(&ped1);
+            }
+            if (ENTITY::DOES_ENTITY_EXIST(ped2)) {
+                ENTITY::DELETE_ENTITY(&ped2);
+            }
+
+            // Excluir os cavalos horse1 e horse2
+            if (ENTITY::DOES_ENTITY_EXIST(horse1)) {
+                ENTITY::DELETE_ENTITY(&horse1);
+            }
+            if (ENTITY::DOES_ENTITY_EXIST(horse2)) {
+                ENTITY::DELETE_ENTITY(&horse2);
+            }
+            // Reiniciar o script
+            LemoyneMountSpawn();
+        }
+    }
+
+    // Adicionando entidades à lista global
+    globalEntityList.push_back(ped1);
+    globalEntityList.push_back(ped2);
+    globalEntityList.push_back(horse1);
+    globalEntityList.push_back(horse2);
+    pedList.push_back(ped1); // Adicionar o ped à lista
+    pedBlips[ped1] = NULL;   // Inicializa o blip do ped como NULL
+}

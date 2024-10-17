@@ -4,10 +4,14 @@
 #pragma warning(disable:4267)
 // Função que executa as funções de forma aleatória sem repetição
 void spawnGroupManager() {
-    // WAIT(300000);
-    WAIT(60000);
+    // WAIT(150000);
+    WAIT(30000);
 
-    std::vector<int> group = { 1, 2, 3};  // Índices das funções
+    if (MISC::GET_MISSION_FLAG()) {
+        return;
+    }
+
+    std::vector<int> group = { 1, 2, 3 };  // Índices das funções
 
     if (group.empty()) {
         return;

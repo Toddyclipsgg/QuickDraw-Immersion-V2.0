@@ -2,6 +2,7 @@
 
 std::vector<std::string> availableOdriscollList = odriscoll;  // Lista de Peds disponíveis para gerar
 std::vector<std::string> usedOdriscollList;  // Lista de Peds já utilizados
+Volume pathVolume;
 
 void odriscollGroup(Ped ped1, Ped ped2) {
     int odriscollId = PED::CREATE_GROUP(0);
@@ -61,51 +62,37 @@ std::string GetRandomOdriscollHash() {
     return selectedOdriscollHash;
 }
 
-// Função para mover dois peds montados para uma coordenada específica
 void OdriscollsMountSpawn() {
 
     // ID do jogador
     Player player = PLAYER::PLAYER_ID();
     Ped playerPed = PLAYER::PLAYER_PED_ID();
 
-    // check if player ped exists and control is on (e.g. not in a cutscene)
-    if (!ENTITY::DOES_ENTITY_EXIST(playerPed) || !PLAYER::IS_PLAYER_CONTROL_ON(player)) {
-        return;
-    }
-
     // Pega as coordenadas atuais do jogador
     Vector3 playerPos = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
     logMessage("Player coordinates captured.");
-
     // Gerar hash para os cavalos aleatórios
     std::string randomHorse1 = GetRandomHorseHash();
     Hash horseHash1 = MISC::GET_HASH_KEY(randomHorse1.c_str());
-
     std::string randomHorse2 = GetRandomHorseHash();
     Hash horseHash2 = MISC::GET_HASH_KEY(randomHorse2.c_str());
-
     // Gerar hash para os O'Driscoll aleatórios
     std::string randomOdriscoll1 = GetRandomOdriscollHash();
     Hash odriscollHash1 = MISC::GET_HASH_KEY(randomOdriscoll1.c_str());
-
     std::string randomOdriscoll2 = GetRandomOdriscollHash();
     Hash odriscollHash2 = MISC::GET_HASH_KEY(randomOdriscoll2.c_str());
-
     // Criando os cavalos aleatórios
     Ped horse1 = createPed(horseHash1, getRandomPedPositionInRange(playerPos, 80));
     Ped horse2 = createPed(horseHash2, getRandomPedPositionInRange(playerPos, 80));
     logMessage("Horses created.");
-
     // Atribuir sela aos cavalos
     giveComboSaddleToHorse(horse1);
     giveComboSaddleToHorse(horse2);
-
     // Criar os peds montados em seus respectivos cavalos
     Ped ped1 = pedMount(odriscollHash1, horse1, true, playerPos, 80);
     Ped ped2 = pedMount(odriscollHash2, horse2, true, playerPos, 80);
     logMessage("Peds mounted on horses.");
     WAIT(4500);
-
     // Definir a personalidade agressiva e permitir interação
     odriscollGroup(ped1, ped2);
     personalityPed(ped1);
@@ -114,11 +101,9 @@ void OdriscollsMountSpawn() {
     ConfigurePedInteraction(ped2);
     logMessage("Peds personality set and interactions configured.");
     WAIT(1000);
-
     // Verifica se ambos os peds (ped e cavalo) existem e estão vivos
     if (ENTITY::DOES_ENTITY_EXIST(ped1) && !ENTITY::IS_ENTITY_DEAD(ped1) &&
         ENTITY::DOES_ENTITY_EXIST(ped2) && !ENTITY::IS_ENTITY_DEAD(ped2)) {
-
         Vector3 ped1Coords = ENTITY::GET_ENTITY_COORDS(ped1, true, false);  // Pega as coordenadas atuais do ped1
         logMessage("Ped 1 coordinates captured.");
         float distanciaMaxima = 1500.0f;  // Defina a distância máxima "perto o suficiente"
@@ -126,58 +111,43 @@ void OdriscollsMountSpawn() {
         float distancia = 0.0f;
         int tentativasMax = 25;  // Limite de tentativas para evitar loop infinito
         int tentativaAtual = 0;
-
         std::pair<std::string, Vector3> destino;
-
         // Gerar novas coordenadas até encontrar uma suficientemente perto e longe o suficiente
         while (tentativaAtual < tentativasMax) {
             destino = GetRandomCoord();  // Gerar uma coordenada aleatória
             distancia = CalcularDistancia(ped1Coords, destino.second);  // Calcular a distância a partir do ped1
-
             logMessage("Attempt " + std::to_string(tentativaAtual) + ": Checking distance for generated coordinate.");
-
             // Verifica se a distância está entre 500 e 1500 metros
             if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
                 logMessage("Coordinate found within valid range.");
                 break;  // Coordenada está dentro do critério de distância
             }
-
             tentativaAtual++;
         }
-
         // Se encontrou uma coordenada dentro do critério
         if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
             float x = destino.second.x;
             float y = destino.second.y;
             float z = destino.second.z;
-
             // Verifica se o ponto é navegável
             if (PATHFIND::IS_POINT_ON_ROAD(x, y, z, ped1)) {
                 logMessage("Point is navigable, moving Ped 1.");
-
                 // Mover o cavalo diretamente para a coordenada de destino
-                // TASK::TASK_LEAD_AND_CONVERSE(ped1, ped2, 0, 1, 5.0f, 2.5f, 1.6f, 1092616192 /* Float: 10f */, 1.0f);
                 TASK::TASK_MOVE_FOLLOW_ROAD_USING_NAVMESH(ped1, 1.001f, x, y, z, 0);
                 ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped1, true);
-
+                ManagePedBlip(ped1, player);
                 // Configurar offset e garantir que ped2 siga sem ultrapassar
                 float safeDistance = 2.0f;  // Distância segura atrás de ped1
                 float minDistance = 1.5f;   // Distância mínima para seguir
-
                 Vector3 ped1Position = ENTITY::GET_ENTITY_COORDS(ped1, true, false);
                 Vector3 ped2Position = ENTITY::GET_ENTITY_COORDS(ped2, true, false);
-
                 // Calcula a distância entre ped1 e ped2
                 float distance = CalcularDistancia(ped1Position, ped2Position);
-
                 logMessage("Ped 1 and Ped 2 distance calculated.");
-
                 // Certifique-se de que ped2 sempre siga atrás de ped1, mantendo uma distância segura
                 if (distance > minDistance) {
                     logMessage("Ped 2 following Ped 1.");
-
                     if (!ENTITY::IS_ENTITY_DEAD(ped2)) {
-                        // TASK::TASK_FOLLOW_AND_CONVERSE_WITH_PED(ped2, ped1, 0, 0, -1.0f, -1.0f, 32, 1.5f, -0.5f, 1.5f, (1 << 30));
                         TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped2, ped1, 0.0f, -safeDistance, 0.0f, 1.001f, -1, 0.500f, true, false, false, false, false, false);
                         ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped2, true);
                     }
@@ -187,33 +157,62 @@ void OdriscollsMountSpawn() {
                     logMessage("Ped 2 is too close to Ped 1, standing still to adjust.");
                     TASK::TASK_STAND_STILL(ped2, 500); // Espera 500ms para manter distância
                 }
-                ManagePedBlip(ped1, player);
             }
             else {
-                // Se o ponto não for navegável, exclui os pedestres e cavalos e reinicia o script
-                logMessage("Point is not navigable, deleting entities and restarting.");
+                logMessage("NavMesh path query failed for ped1. Deleting entities and restarting.");
 
-                // Excluir os pedestres ped1 e ped2
-                if (ENTITY::DOES_ENTITY_EXIST(ped1)) {
-                    ENTITY::DELETE_ENTITY(&ped1);
-                }
-                if (ENTITY::DOES_ENTITY_EXIST(ped2)) {
-                    ENTITY::DELETE_ENTITY(&ped2);
+                ENTITY::DELETE_ENTITY(&ped1);
+                ENTITY::DELETE_ENTITY(&ped2);
+                ENTITY::DELETE_ENTITY(&horse1);
+                ENTITY::DELETE_ENTITY(&horse2);
+                OdriscollsMountSpawn();
+            }
+
+            // Aguardar até que o ped tenha ficado parado por 5 segundos
+            int pedParouTempo = -1;
+            bool pedParadoContinuamente = false;
+
+            // Loop de 5 segundos com intervalos de 100ms
+            while (true) {
+                // Verificações para garantir que ped1 ainda existe e não está morto
+                if (!ENTITY::DOES_ENTITY_EXIST(ped1) || ENTITY::IS_ENTITY_DEAD(ped1)) {
+                    logMessage("Ped 1 no longer exists or is dead. Exiting loop.");
+                    break;  // Para o loop se o ped1 não existir ou estiver morto
                 }
 
-                // Excluir os cavalos horse1 e horse2
-                if (ENTITY::DOES_ENTITY_EXIST(horse1)) {
-                    ENTITY::DELETE_ENTITY(&horse1);
+                if (PED::IS_PED_STOPPED(ped1)) {
+                    if (pedParouTempo == -1) {
+                        // O ped parou pela primeira vez, registrar o tempo atual
+                        pedParouTempo = BUILTIN::TIMERA();
+                        logMessage("Ped 1 stopped. Timer started.");
+                    }
+                    else {
+                        // Verificar se já passou mais de 5 segundos desde que o ped parou
+                        if (BUILTIN::TIMERA() - pedParouTempo >= 5000) {
+                            pedParadoContinuamente = true;
+                            break;  // O ped ficou parado por mais de 5 segundos, interrompe o loop
+                        }
+                    }
                 }
-                if (ENTITY::DOES_ENTITY_EXIST(horse2)) {
-                    ENTITY::DELETE_ENTITY(&horse2);
+                else {
+                    // O ped se moveu novamente, resetar o controle
+                    pedParouTempo = -1;
                 }
-                // Reiniciar o script
+
+                WAIT(100);  // Aguarda 100ms entre as verificações
+            }
+
+            if (pedParadoContinuamente) {
+                logMessage("Ped 1 stopped for 5 seconds. Deleting entities.");
+                ENTITY::DELETE_ENTITY(&ped1);
+                ENTITY::DELETE_ENTITY(&ped2);
+                ENTITY::DELETE_ENTITY(&horse1);
+                ENTITY::DELETE_ENTITY(&horse2);
+                // Chama a função
                 OdriscollsMountSpawn();
             }
         }
     }
-
     // Adicionando entidades à lista global
     globalEntityList.push_back(ped1);
     globalEntityList.push_back(ped2);

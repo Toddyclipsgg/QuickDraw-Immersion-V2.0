@@ -36,20 +36,18 @@ void ConfigurePedInteraction(Ped ped) {
         // Outras flags configuráveis (baseadas nos seus comentários)
         // PED::SET_PED_CONFIG_FLAG(ped, 9, true);    // PCF_KilledByStealth (morte por stealth permitida)
         PED::SET_PED_CONFIG_FLAG(ped, 150, true);  // PCF_ForceBleeding (força o sangramento)
-        PED::SET_PED_CONFIG_FLAG(ped, 161, true);  // PCF_IsWhistling (ped pode assobiar)
         PED::SET_PED_CONFIG_FLAG(ped, 289, true);  // PCF_TreatDislikeAsHateWhenInCombat (trata "dislike" como "hate" em combate)
         PED::SET_PED_CONFIG_FLAG(ped, 290, true);  // PCF_TreatNonFriendlyAsHateWhenInCombat (trata não amigáveis como "hate")
         PED::SET_PED_CONFIG_FLAG(ped, 336, true);  // PCF_ForceInjuredMovement (força movimento de ferido)
         PED::SET_PED_CONFIG_FLAG(ped, 351, true);  // PCF_DisableIntimidationBackingAway (não recua sob intimidação)
         PED::SET_PED_CONFIG_FLAG(ped, 356, true);  // PCF_BlockRobberyInteractionEscape (bloqueia fuga durante roubo)
-        PED::SET_PED_CONFIG_FLAG(ped, 359, true);  // PCF_AllowInCombatInteractionLockonOnTargetPed (permitir lock-on em combate)
-        // PED::SET_PED_CONFIG_FLAG(ped, 406, true);  // PCF_ForceOfferItemOnReceivingRobberyInteraction (força oferta de item no roubo)
-        // PED::SET_PED_CONFIG_FLAG(ped, 435, true);  // PCF_AlwaysRejectPlayerRobberyAttempt (sempre rejeita tentativa de roubo do jogador)
-        PED::SET_PED_CONFIG_FLAG(ped, 505, true);  // PCF_AllowRobberyWhenInjured (permitir roubo mesmo ferido)
+        PED::SET_PED_CONFIG_FLAG(ped, 435, true);  // PCF_AlwaysRejectPlayerRobberyAttempt (sempre rejeita tentativa de roubo do jogador)
         PED::SET_PED_CONFIG_FLAG(ped, 477, true);  // PCF_CanInteractWithPlayerEvenIfInputsDisabled (interação mesmo com inputs desativados)
 
     }
     else {
-        logMessage("O Ped está morto. Não foi possível configurar.");
+        logMessage("Ped is dead. Unable to configure.");
     }
 }
+
+//COMPANION::_0xD730281E496621FB(func_176(uParam0, 1), joaat("support"));

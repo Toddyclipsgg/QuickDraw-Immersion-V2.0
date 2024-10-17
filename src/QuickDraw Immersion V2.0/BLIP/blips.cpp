@@ -1,5 +1,9 @@
 #include "..\header.h"
 
+// Variáveis globais
+std::vector<Ped> pedList; // Lista global de peds
+std::map<Ped, Blip> pedBlips; // Mapa para armazenar a relação ped -> blip
+
 Blip createBlip(Vector3 pos, Hash blipType, Hash blipSprite)
 {
 	Blip blip;
@@ -73,44 +77,39 @@ Object createProp(const char* model, Vector3 position, float heading, bool isSta
 	return prop;
 }
 
-// Função para gerenciar o blip do ped (criação e remoção)
+// Função para gerenciar o blip de um ped
 void ManagePedBlip(Ped ped, Player player) {
-	// Variável do blip criada aqui para ser acessível em ambos os blocos
-	static Blip targetBlip = NULL;
-	static bool seen = false;  // Variável de controle para garantir que o blip seja atualizado corretamente
-
-	// Verificar se o ped existe e está vivo antes de criar o blip
+	// Verificar se o ped existe e está vivo
 	if (ENTITY::DOES_ENTITY_EXIST(ped) && !ENTITY::IS_ENTITY_DEAD(ped)) {
+		Blip& targetBlip = pedBlips[ped]; // Referência para o blip associado ao ped
+
 		// Se o blip ainda não foi criado, criá-lo
 		if (targetBlip == NULL) {
-			targetBlip = createBlip(ped, MISC::GET_HASH_KEY("BLIP_STYLE_EVENT_AREA"));
+			targetBlip = createBlip(ped, MISC::GET_HASH_KEY("BLIP_STYLE_RANDOM_EVENT_PULSE"));
 			logMessage("Blip created for the ped.");
 		}
 
-		// Verificar se o jogador e o ped têm linha de visão clara um do outro para remover o blip
-		if (ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(player, ped, 1) &&
-			ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, player, 1) && !seen) {
-
-			// Remover o blip com segurança
+		// Verificar linha de visão entre o jogador e o ped para remover o blip
+		if (ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(player, ped, 1)) {
+			// Se há linha de visão, remover o blip
 			deleteBlipSafe(&targetBlip);
-			logMessage("Blip removed.");
-			seen = true; // Atualiza a variável de controle
-		}
-		else if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(player, ped, 1) ||
-			!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, player, 1)) {
-			// Se a linha de visão não estiver clara, redefinir seen
-			seen = false; // Permitir que o blip seja recriado
+			logMessage("Blip removed due to clear LOS.");
 		}
 	}
 	else {
-		// Caso o ped esteja morto ou não exista, remover o blip
+		// Se o ped estiver morto ou não existir, remover o blip
+		Blip& targetBlip = pedBlips[ped];
 		if (targetBlip != NULL) {
 			deleteBlipSafe(&targetBlip);
-			targetBlip = NULL;  // Redefinir o blip após a exclusão
-			logMessage("Blip removed because ped does not exist or is dead.");
+			targetBlip = NULL;  // Limpar o blip no mapa
+			logMessage("Blip removed because ped is dead or doesn't exist.");
 		}
-		seen = false;  // Resetar a variável de controle
 	}
 }
 
-// createBlip(ped, MISC::GET_HASH_KEY("BLIP_STYLE_EVENT_AREA")
+// Função no loop principal para gerenciar os blips de todos os peds
+void ManageAllPedBlips(Player player) {
+	for (auto& ped : pedList) {
+		ManagePedBlip(ped, player); // Chamar a função para cada ped
+	}
+}

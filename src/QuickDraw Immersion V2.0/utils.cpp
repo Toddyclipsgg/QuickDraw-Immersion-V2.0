@@ -11,7 +11,6 @@ float CalcularDistancia(Vector3 pedCoords, Vector3 destinoCoords) {
 bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath) {
     // Definir ped do jogador
     Player playerPed = PLAYER::PLAYER_PED_ID();
-
     // Checar se o jogador está morto e, se deleteOnPlayerDeath estiver ativado, deletar todas as entidades
     if (deleteOnPlayerDeath && ENTITY::IS_ENTITY_DEAD(playerPed)) {
         logMessage("Player is dead. Deleting all entities.");
@@ -23,23 +22,18 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
         entities.clear();  // Limpar a lista de entidades
         return true;
     }
-
     // Pegar coordenadas do jogador
     Vector3 playerCoords = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
-
     // Variável para armazenar o tempo em que o ped parou
     static std::unordered_map<Entity, int> pedStopTimes;
-
     // Iterar sobre a lista de entidades
     for (auto it = entities.begin(); it != entities.end(); ) {
         if (ENTITY::DOES_ENTITY_EXIST(*it)) {
             // Pegar coordenadas da entidade
             Vector3 entityCoords = ENTITY::GET_ENTITY_COORDS(*it, true, false);
-
             // Calcular a distância entre o jogador e a entidade usando o BUILTIN::VDIST
             float distance = BUILTIN::VDIST(playerCoords.x, playerCoords.y, playerCoords.z,
                 entityCoords.x, entityCoords.y, entityCoords.z);
-
             // Se a entidade estiver parada
             if (PED::IS_PED_STOPPED(*it)) {
                 if (pedStopTimes.find(*it) == pedStopTimes.end()) {
@@ -50,8 +44,9 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
                 else {
                     // Verificar se o ped está parado por mais de 5 segundos
                     int stoppedDuration = BUILTIN::TIMERA() - pedStopTimes[*it];
-                    if (stoppedDuration > 6000) {  // Mais de 7 segundos (7000 ms)
-                        logMessage("Ped has been stopped for over 7 seconds, deleting entity immediately.");
+                    if (stoppedDuration > 25000) {  // Mais de 5 segundos (5000 ms)
+                        logMessage("Ped has been stopped for over 10 seconds, deleting entity immediately.");
+                        ENTITY::DELETE_ENTITY(&(*it));  // Delete the entity immediately
                         ENTITY::DELETE_ENTITY(&(*it));  // Delete the entity immediately
                         it = entities.erase(it);  // Remover entidade da lista
                         pedStopTimes.erase(*it);  // Remover ped da lista de tempos
@@ -66,7 +61,6 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
                     pedStopTimes.erase(*it);
                 }
             }
-
             // Se a distância for maior que maxDistance ou a entidade estiver morta, marcar a entidade como não mais necessária
             if (distance > maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
                 logMessage("Marking entity as no longer needed: out of range or dead.");
@@ -82,7 +76,6 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
             ++it;  // Continuar para a próxima entidade
         }
     }
-
     // Adicionar um momento de pausa para evitar sobrecarregar o processamento
     WAIT(2000);
     return true;

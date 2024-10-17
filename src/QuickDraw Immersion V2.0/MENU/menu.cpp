@@ -127,7 +127,7 @@ void startmenu()
         // Define o título e cabeçalho do menu principal
         addTitle("QUICKDRAW");
         addHeader("Mod by Toddyclipsgg.");
-        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
         // Adiciona opção para acessar o Submenu 1
         addSubmenuOption("Gun Tricks", Submenu1, [] { PrintSubtitle("Select your Gun Tricks.\nFavorite whenever you want, whenever you want!"); });
         // Adiciona opção para acessar o Submenu 2
@@ -176,7 +176,7 @@ void startmenu()
             selected_single_variation = 5;
             SetGunTrickAnimation(selected_single_variation);
             });
-        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
         break;
 
     case Submenu2:
@@ -204,7 +204,7 @@ void startmenu()
         addOption("Sandstorm", [] { SetWeather(MISC::GET_HASH_KEY("SANDSTORM"), "Sandstorm"); });
         addOption("Overcast Dark", [] { SetWeather(MISC::GET_HASH_KEY("OVERCASTDARK"), "Overcast Dark"); });
         addOption("Ground Blizzard", [] { SetWeather(MISC::GET_HASH_KEY("GROUNDBLIZZARD"), "Ground Blizzard"); });
-        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
         break;
 
     case Submenu3:
@@ -214,7 +214,7 @@ void startmenu()
         addVectorOption("Minute", &selectedMinute, 1, 0, 59); // Seleção de minuto
         addVectorOption("Second", &selectedSecond, 1, 0, 59); // Seleção de segundo
         addBoolOption("Pause Time", bPauseTime, PauseTime); // Pausa o tempo
-        addOption("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
         break;
 
     case Updates:
@@ -224,7 +224,7 @@ void startmenu()
         addUpdate("Update Gun Tricks 9ms to 5ms.");
         addUpdate("Simpler and more intuitive menu.");
         addUpdate("Add mounted gang O'driscoll.");
-        addOption("Exclusive Features, Instant Upgrade. Click to Unlock!", OpenWebsite);
+        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
         break;
     }
     resetVars(); // Reseta variáveis do menu

@@ -93,6 +93,48 @@ void addOption(const char* option, void (func)() = NULLVOID) {
     }
 }
 
+// Variável de tempo global para controlar a pulsação
+float pulseTimer = 0.0f;
+
+// Função para adicionar uma opção ao menu
+void addOptionPulse(const char* option, void (*func)() = NULLVOID) {
+    optionCount++; // Incrementa a contagem de opções
+
+    // Verifica se a opção atual está dentro dos limites do menu
+    if (currentOption <= currentMenuMaxOptions && optionCount <= currentMenuMaxOptions && currentOption >= currentMenuMinOptions && optionCount >= currentMenuMinOptions) {
+        // Calcula a pulsação (alfa vai oscilar entre 50 e 150 para opções não selecionadas)
+        int nonSelectedAlpha = static_cast<int>(50 + 100 * (sin(pulseTimer) * 0.5f + 0.5f));
+
+        // Incrementa o tempo da pulsação para o próximo frame
+        pulseTimer += 0.05f;
+        if (pulseTimer > 6.28f) // Reseta o timer para manter dentro do intervalo de 2*PI
+            pulseTimer = 0.0f;
+
+        // Se a opção atual for a que está sendo desenhada
+        if (currentOption == optionCount) {
+            // Desenha o texto sem pulsar (opacidade total)
+            draw_Text(option, menuX + 0.007f, 0.131f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 255, 255, 255, 255);
+            drawRect(menuX, 0.124f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 0.260f, 0.038f, 0, 0, 0, 190);
+
+            // Calcula a pulsação mais intensa (alfa vai oscilar entre 100 e 255)
+            int selectedAlpha = static_cast<int>(100 + 155 * (sin(pulseTimer) * 0.5f + 0.5f));
+
+            // Desenha o fundo com pulsação na cor (vermelho) com alfa variando
+            DrawSprite("generic_textures", "selection_box_bg_1d", menuX, 0.124f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 0.260f, 0.038f, 0, 255, 0, 0, selectedAlpha);
+
+            // Se a tecla Enter foi pressionada, executa a função associada
+            if (m_EnterKeyPressed) {
+                func();
+            }
+        }
+        else {
+            // Para as opções não selecionadas, o texto ainda pulsa
+            draw_Text(option, menuX + 0.007f, 0.131f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 255, 255, 255, nonSelectedAlpha);
+            drawRect(menuX, 0.124f + (0.038f * ((optionCount - currentMenuMinOptions) + 1)), 0.260f, 0.038f, 0, 0, 0, 190);
+        }
+    }
+}
+
 // Função para adicionar uma opção ao menu
 void addUpdate(const char* text) {
     optionCount++; // Incrementa a contagem de opções

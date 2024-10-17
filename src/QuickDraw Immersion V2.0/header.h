@@ -32,9 +32,13 @@
 #include <ctime>
 #include <random>
 #include <functional>
+#include <map>
 
 extern std::vector<Entity> globalEntityList;
 extern int selected_single_variation;
+extern std::vector<Ped> pedList;
+extern std::map<Ped, Blip> pedBlips;
+
 // Logger
 #include "logger.h"
 

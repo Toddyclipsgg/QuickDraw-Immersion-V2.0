@@ -31,8 +31,10 @@ void ScriptMain2() {
 
 // Função da thread adicional
 void ScriptMain3() {
+    Player player = PLAYER::PLAYER_PED_ID();
 
     while (true) {
+
         DeleteEntitiesOnCondition(globalEntityList, 250.0f, true); // Chama a função de deletar entidades
         WAIT(0); // Espera 1 segundo entre cada chamada para não sobrecarregar a execução
     }

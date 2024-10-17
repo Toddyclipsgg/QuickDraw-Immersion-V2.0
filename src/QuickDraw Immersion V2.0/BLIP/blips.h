@@ -7,3 +7,4 @@ void setBlipLabel(Blip blip, const char* label);
 void deleteBlipSafe(Blip* blip);
 Object createProp(const char* model, Vector3 position, float heading, bool isStatic, bool isVisible);
 void ManagePedBlip(Ped ped, Player player);
+void ManageAllPedBlips(Player player);

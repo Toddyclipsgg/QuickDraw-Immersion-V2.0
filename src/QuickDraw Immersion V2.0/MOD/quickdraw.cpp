@@ -1,6 +1,11 @@
 #include "..\header.h"
 
 void holsterWeaponAndShoot() {
+
+    if (MISC::GET_MISSION_FLAG()) {
+        return;
+    }
+
     // Obtém o ped do jogador
     Ped ped = PLAYER::PLAYER_PED_ID();
 

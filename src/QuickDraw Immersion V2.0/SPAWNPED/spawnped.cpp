@@ -50,3 +50,8 @@ int rndInt(int start, int end) {
     logMessage("Generating random integer.");
     return MISC::GET_RANDOM_INT_IN_RANGE(start, end);
 }
+
+//função rápida para obter a distância entre 2 pontos: por exemplo - if (distanceBetween(coordsOf(player), targetCoords) < 50)
+float distanceBetween(Vector3 A, Vector3 B) {
+    return MISC::GET_DISTANCE_BETWEEN_COORDS(A.x, A.y, A.z, B.x, B.y, B.z, 1);
+}

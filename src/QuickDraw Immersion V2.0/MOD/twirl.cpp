@@ -76,6 +76,11 @@ void twirlGunSingle(int variation_num) {
 
 // Função para alternar o estado da animação com a tecla pressionada
 void toggleTwirl() {
+
+    if (MISC::GET_MISSION_FLAG()) {
+        return;
+    }
+
     Ped ped = PLAYER::PLAYER_PED_ID();
 
     if (isTwirlActive) {
