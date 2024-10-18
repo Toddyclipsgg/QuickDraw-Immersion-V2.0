@@ -2,6 +2,7 @@
 
 void holsterWeaponAndShoot() {
 
+    // Desativa durante missão
     if (MISC::GET_MISSION_FLAG()) {
         return;
     }

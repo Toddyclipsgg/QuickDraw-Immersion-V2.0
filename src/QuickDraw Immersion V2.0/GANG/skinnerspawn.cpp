@@ -3,6 +3,7 @@
 std::vector<std::string> availableSkinnerList = skinner;  // Lista de Peds disponíveis para gerar
 std::vector<std::string> usedSkinnerList;  // Lista de Peds já utilizados
 
+
 void skinnerGroup(Ped ped1, Ped ped2) {
     int skinnerId = PED::CREATE_GROUP(0);
 
@@ -63,6 +64,10 @@ std::string GetRandomSkinnerHash() {
 
 // Função para mover dois peds montados para uma coordenada específica
 void SkinnerMountSpawn() {
+    // Desativa durante missão
+    if (MISC::GET_MISSION_FLAG()) {
+        return;
+    }
 
     // ID do jogador
     Player player = PLAYER::PLAYER_ID();
@@ -168,48 +173,41 @@ void SkinnerMountSpawn() {
                 SkinnerMountSpawn();
             }
 
-            // Aguardar até que o ped tenha ficado parado por 5 segundos
-            int pedParouTempo = -1;
-            bool pedParadoContinuamente = false;
+            // Define o tempo necessário para que o ped fique parado (5 segundos em milissegundos)
+            const int tempoParadoNecessario = 5000;
+            // Define o tempo máximo para encerrar o script (6 segundos em milissegundos)
+            const int tempoMaximoExecucao = 6000;
 
-            // Loop de 5 segundos com intervalos de 100ms
+            BUILTIN::SETTIMERA(0); // Zera o temporizador no início
+            int tempoTotal = 0; // Variável para armazenar o tempo total de execução
+
             while (true) {
-                // Verificações para garantir que ped1 ainda existe e não está morto
-                if (!ENTITY::DOES_ENTITY_EXIST(ped1) || ENTITY::IS_ENTITY_DEAD(ped1)) {
-                    logMessage("Ped 1 no longer exists or is dead. Exiting loop.");
-                    break;  // Para o loop se o ped1 não existir ou estiver morto
+                // Verifica se o ped está parado
+                if (!PED::IS_PED_STOPPED(ped1)) {
+                    logMessage("SKINNER: Ped voltou a se mover.");
+                    BUILTIN::SETTIMERA(0); // Reseta o temporizador se o ped se mover
                 }
 
-                if (PED::IS_PED_STOPPED(ped1)) {
-                    if (pedParouTempo == -1) {
-                        // O ped parou pela primeira vez, registrar o tempo atual
-                        pedParouTempo = BUILTIN::TIMERA();
-                        logMessage("Ped 1 stopped. Timer started.");
-                    }
-                    else {
-                        // Verificar se já passou mais de 5 segundos desde que o ped parou
-                        if (BUILTIN::TIMERA() - pedParouTempo >= 5000) {
-                            pedParadoContinuamente = true;
-                            break;  // O ped ficou parado por mais de 5 segundos, interrompe o loop
-                        }
-                    }
-                }
-                else {
-                    // O ped se moveu novamente, resetar o controle
-                    pedParouTempo = -1;
+                // Se o ped está parado, verificamos o tempo no temporizador
+                if (BUILTIN::TIMERA() >= tempoParadoNecessario) {
+                    logMessage("SKINNER: Ped está parado há 5 segundos. Apagando...");
+
+                    ENTITY::DELETE_ENTITY(&ped1);
+                    ENTITY::DELETE_ENTITY(&ped2);
+                    ENTITY::DELETE_ENTITY(&horse1);
+                    ENTITY::DELETE_ENTITY(&horse2);
+                    SkinnerMountSpawn();
+                    break; // Sai do loop após apagar as entidades
                 }
 
-                WAIT(100);  // Aguarda 100ms entre as verificações
-            }
+                // Verifica se o tempo total de execução chegou a 6 segundos
+                tempoTotal += 100;
+                if (tempoTotal >= tempoMaximoExecucao) {
+                    break; // Sai do loop após 6 segundos
+                }
 
-            if (pedParadoContinuamente) {
-                logMessage("Ped 1 stopped for 5 seconds. Deleting entities.");
-                ENTITY::DELETE_ENTITY(&ped1);
-                ENTITY::DELETE_ENTITY(&ped2);
-                ENTITY::DELETE_ENTITY(&horse1);
-                ENTITY::DELETE_ENTITY(&horse2);
-                // Chama a função
-                SkinnerMountSpawn();
+                // Aguarda 100 milissegundos antes de verificar novamente
+                WAIT(100);
             }
         }
     }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 
 bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath);

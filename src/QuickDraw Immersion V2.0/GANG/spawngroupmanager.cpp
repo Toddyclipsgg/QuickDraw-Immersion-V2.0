@@ -4,9 +4,10 @@
 #pragma warning(disable:4267)
 // Função que executa as funções de forma aleatória sem repetição
 void spawnGroupManager() {
-    // WAIT(150000);
-    WAIT(30000);
-
+    WAIT(150000);
+    // WAIT(30000);
+    
+    // Desativa durante missão
     if (MISC::GET_MISSION_FLAG()) {
         return;
     }

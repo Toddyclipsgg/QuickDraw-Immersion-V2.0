@@ -1,10 +1,11 @@
 #include "header.h"
 
+std::vector<Entity> globalEntityList;
+
 #pragma warning(disable:4326)
 // Função principal chamada a cada frame
 void main() {
     startLogThread();
-    BUILTIN::SET_THIS_THREAD_PRIORITY(0);
 
     while (true) {
 
@@ -31,7 +32,6 @@ void ScriptMain2() {
 
 // Função da thread adicional
 void ScriptMain3() {
-    Player player = PLAYER::PLAYER_PED_ID();
 
     while (true) {
 

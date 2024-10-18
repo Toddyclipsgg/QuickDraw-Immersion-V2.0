@@ -1,7 +1,5 @@
 #include "header.h"
 
-std::vector<Entity> globalEntityList;
-
 // Função para calcular distância 3D entre o ped e as coordenadas fornecidas
 float CalcularDistancia(Vector3 pedCoords, Vector3 destinoCoords) {
     return BUILTIN::VDIST(pedCoords.x, pedCoords.y, pedCoords.z, destinoCoords.x, destinoCoords.y, destinoCoords.z);
@@ -9,6 +7,7 @@ float CalcularDistancia(Vector3 pedCoords, Vector3 destinoCoords) {
 
 // Delete ped if stopped for more than 5 seconds or set entity as no longer needed otherwise
 bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath) {
+
     // Definir ped do jogador
     Player playerPed = PLAYER::PLAYER_PED_ID();
     // Checar se o jogador está morto e, se deleteOnPlayerDeath estiver ativado, deletar todas as entidades
@@ -44,9 +43,8 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
                 else {
                     // Verificar se o ped está parado por mais de 5 segundos
                     int stoppedDuration = BUILTIN::TIMERA() - pedStopTimes[*it];
-                    if (stoppedDuration > 25000) {  // Mais de 5 segundos (5000 ms)
+                    if (stoppedDuration > 15000) {  // Mais de 5 segundos (5000 ms)
                         logMessage("Ped has been stopped for over 10 seconds, deleting entity immediately.");
-                        ENTITY::DELETE_ENTITY(&(*it));  // Delete the entity immediately
                         ENTITY::DELETE_ENTITY(&(*it));  // Delete the entity immediately
                         it = entities.erase(it);  // Remover entidade da lista
                         pedStopTimes.erase(*it);  // Remover ped da lista de tempos
@@ -84,14 +82,11 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
 // Função para calcular a distância horizontal entre duas entidades (2D)
 float distanceBetweenEntitiesHor(Entity entity1, Entity entity2)
 {
-
     // Obtendo as coordenadas das entidades
     Vector3 pos1 = ENTITY::GET_ENTITY_COORDS(entity1, 1, 0);
     Vector3 pos2 = ENTITY::GET_ENTITY_COORDS(entity2, 1, 0);
-
     // Calculando a distância horizontal entre as entidades
     float distance = MISC::GET_DISTANCE_BETWEEN_COORDS(pos1.x, pos1.y, 0, pos2.x, pos2.y, 0, 1);
-
     logMessage("2D distance calculated successfully.");
     return distance;
 }
