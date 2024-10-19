@@ -7,8 +7,8 @@
 #include <mutex>
 
 // Defina esta macro para habilitar o console
-#define CONSOLE_ENABLED 1
-#define INJECTION_CONSOLE_ENABLE 1
+#define CONSOLE_ENABLED 0
+#define INJECTION_CONSOLE_ENABLE 0
 
 extern std::ofstream logFile;
 extern std::thread logThread;

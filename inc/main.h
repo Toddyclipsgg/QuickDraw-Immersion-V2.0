@@ -9,8 +9,6 @@
 #include <windows.h>
 #include <cstdint> // Para uint64_t
 
-#define PI 3.14159265
-
 #define IMPORT __declspec(dllimport)
 
 // Declaração da função importada
