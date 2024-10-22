@@ -64,3 +64,35 @@ std::pair<std::string, Vector3> GetRandomCoord() {
 	// Retornar a coordenada selecionada
 	return selectedCoord;
 }
+
+bool isPlayerWithinDistance(double maxDistance) {
+	// Obter a entidade do jogador (Ped)
+	Ped player_ped = PLAYER::PLAYER_PED_ID();
+
+	// Obter as coordenadas atuais do jogador
+	Vector3 player_coords = ENTITY::GET_ENTITY_COORDS(player_ped, true, true);
+
+	// Converter as coordenadas do jogador para double
+	double playerX = static_cast<double>(player_coords.x);
+	double playerY = static_cast<double>(player_coords.y);
+	double playerZ = static_cast<double>(player_coords.z);
+
+	// Iterar sobre cada local na lista e verificar a distância
+	for (const auto& location : locations) {
+		double locX = location.coords.x;
+		double locY = location.coords.y;
+		double locZ = location.coords.z;
+
+		// Calcular a distância entre o jogador e o local usando VDIST
+		double distance = BUILTIN::VDIST((float)playerX, (float)playerY, (float)playerZ, (float)locX, (float)locY, (float)locZ);
+
+		// Verificar se a distância é menor ou igual à distância máxima
+		if (distance <= maxDistance) {
+			logMessage("Player is near " + location.name + ". Distance: " + std::to_string(distance));
+			return true;
+		}
+	}
+
+	// Se não estiver perto de nenhuma localização, retornar false
+	return false;
+}

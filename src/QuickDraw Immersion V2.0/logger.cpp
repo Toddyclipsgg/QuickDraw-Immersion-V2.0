@@ -13,9 +13,9 @@ const std::chrono::seconds logInterval(0); // Intervalo entre mensagens de log
 void initLog() {
     logFile.open("QuickDraw_Immersion_V2.0_Log.txt", std::ofstream::out | std::ofstream::trunc); // Sobrescreve o log anterior
     if (logFile.is_open()) {
-        logFile << "Iniciando log do mod...\n";
+        logFile << "Starting mod log...\n";
 #if CONSOLE_ENABLED
-        std::cout << "Log inicializado\n";
+        std::cout << "Log initialized\n";
 #endif
     }
 }

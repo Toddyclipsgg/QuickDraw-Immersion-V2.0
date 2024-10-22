@@ -5,9 +5,12 @@
 enum Submenus {
 	Closed,
 	Main_Menu,
-	Submenu1,
-	Submenu2,
-	Submenu3,
+	SubmenuPlusTricks,
+	SubmenuFreeTricks,
+	SubmenuPlusWeather,
+	SubmenuFreeWeather,
+	SubmenuPlusTime,
+	SubmenuFreeTime,
 	Updates,
 };
 

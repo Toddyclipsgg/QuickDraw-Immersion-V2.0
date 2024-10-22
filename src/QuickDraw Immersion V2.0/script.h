@@ -11,6 +11,8 @@
 #include "..\..\inc\enums.h"
 #include "..\..\inc\main.h"
 
+void DisplayPlayerCoordinatesPanel();
+void printStartMod();
 void AdjustTime();
 void startmenu();
 void ScriptMain3();

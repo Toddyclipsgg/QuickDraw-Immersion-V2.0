@@ -1,5 +1,7 @@
 #include "header.h"
 
+#define DEBUG_COORD 0
+
 std::vector<Entity> globalEntityList;
 
 #pragma warning(disable:4326)
@@ -18,8 +20,13 @@ void main() {
 // Função da thread adicional
 void ScriptMain2() {
     Ped player = PLAYER::PLAYER_PED_ID();
+    printStartMod();
 
     while (true) {
+
+#if DEBUG_COORD
+        DisplayPlayerCoordinatesPanel();
+#endif // DEBUG_COORD
 
         startmenu();
         checkKeyPress();

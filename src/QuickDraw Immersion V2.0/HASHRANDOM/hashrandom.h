@@ -238,6 +238,23 @@ static std::vector<std::pair<std::string, Vector3>> coordenadas = {
 	{"BENEDICT POINT", {-5269.60400, -3411.0588, -23.15930}}
 };
 
+// Estrutura para armazenar os locais e suas coordenadas
+struct Location {
+	std::string name;
+	Vector3 coords;
+};
+
+// Lista de localizações
+static std::vector<Location> locations = {
+	{"Horseshoe Overlook", {-1154.73778, 2904.0226, 95.80056}},
+	{"Beaver Hollow", {2342.88013, 1365.9162, 106.42272}},
+	{"Lakay", {2252.35767, -755.3908, 42.72958}},
+	{"Colter", {-1341.87109, 2432.0769, 308.02673}},
+	{"Clemens Point", {677.63757, -1258.65869, 44.00875}},
+	{"Shady Belle", {1897.53027, -1863.68994, 55.92903}}
+};
+
 std::string GetRandomHorseHash();
 std::pair<std::string, Vector3> GetRandomCoord();
+bool isPlayerWithinDistance(double maxDistance);
 // std::string GetRandomSaddleHash();

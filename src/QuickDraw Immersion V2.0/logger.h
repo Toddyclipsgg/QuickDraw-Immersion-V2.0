@@ -2,13 +2,13 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <fstream>
-#include <thread>
-#include <mutex>
-
 // Defina esta macro para habilitar o console
 #define CONSOLE_ENABLED 0
 #define INJECTION_CONSOLE_ENABLE 0
+
+#include <fstream>
+#include <thread>
+#include <mutex>
 
 extern std::ofstream logFile;
 extern std::thread logThread;

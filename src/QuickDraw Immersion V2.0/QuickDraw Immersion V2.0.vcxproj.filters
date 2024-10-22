@@ -45,6 +45,9 @@
     <ClCompile Include="GANG\skinnerspawn.cpp">
       <Filter>gang</Filter>
     </ClCompile>
+    <ClCompile Include="CREATORVEHICLE\spawnvehicle.cpp">
+      <Filter>creatorvehicle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\types.h">
@@ -108,6 +111,9 @@
     <ClInclude Include="GANG\skinnerspawn.h">
       <Filter>gang</Filter>
     </ClInclude>
+    <ClInclude Include="CREATORVEHICLE\spawnvehicle.h">
+      <Filter>creatorvehicle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -136,6 +142,9 @@
     </Filter>
     <Filter Include="gang\spawngroupmanager">
       <UniqueIdentifier>{7d4cd143-6a5c-449d-8918-b888d2f1c1fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="creatorvehicle">
+      <UniqueIdentifier>{5a80d11a-c897-442c-b692-070d29e02e6f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

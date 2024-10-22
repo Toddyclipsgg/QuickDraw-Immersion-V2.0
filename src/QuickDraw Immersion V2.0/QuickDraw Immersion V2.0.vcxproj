@@ -10,6 +10,7 @@
     <ClCompile Include="BLIP\blips.cpp" />
     <ClCompile Include="CREATORPED\creatorped.cpp" />
     <ClCompile Include="CREATORPED\setpresetped.cpp" />
+    <ClCompile Include="CREATORVEHICLE\spawnvehicle.cpp" />
     <ClCompile Include="GANG\lemoynespawn.cpp" />
     <ClCompile Include="GANG\odriscollsspawn.cpp" />
     <ClCompile Include="GANG\skinnerspawn.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="BLIP\blips.h" />
     <ClInclude Include="CREATORPED\creatorped.h" />
     <ClInclude Include="CREATORPED\setpresetped.h" />
+    <ClInclude Include="CREATORVEHICLE\spawnvehicle.h" />
     <ClInclude Include="GANG\lemoynespawn.h" />
     <ClInclude Include="GANG\odriscollsspawn.h" />
     <ClInclude Include="GANG\skinnerspawn.h" />
@@ -55,7 +57,7 @@
     <ProjectGuid>{8D82F34A-1D64-465B-84B1-37F89AD3D20B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>QuickDraw Immersion V2.0</RootNamespace>
-    <ProjectName>QuickDraw Immersion V2.2</ProjectName>
+    <ProjectName>QuickDraw Immersion V2.3</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
