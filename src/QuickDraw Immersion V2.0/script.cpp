@@ -51,7 +51,6 @@ void ScriptMain3() {
 
     while (true) {
 
-        DeleteVehiclesAndHorses(vehicleEntityList, 100.0f, true);
         DeleteEntitiesOnCondition(globalEntityList, 100.0f, true); // Chama a função de deletar entidades
         WAIT(0); // Espera 1 segundo entre cada chamada para não sobrecarregar a execução
     }

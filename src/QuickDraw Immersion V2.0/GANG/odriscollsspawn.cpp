@@ -384,7 +384,7 @@ void OdriscollsVehicleSpawn()
 
         // Gerar novas coordenadas até encontrar uma suficientemente perto e longe o suficiente
         while (tentativaAtual < tentativasMax) {
-            WAIT(1000);
+            WAIT(50);
             destino = GetRandomCoord();  // Gerar uma coordenada aleatória
             distancia = CalcularDistancia(ped1Coords, destino.second);  // Calcular a distância a partir do ped1
             logMessage("Attempt " + std::to_string(tentativaAtual) + ": Checking distance for generated coordinate.");
