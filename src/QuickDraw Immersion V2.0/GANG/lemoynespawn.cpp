@@ -23,7 +23,7 @@ void lemoyneGroup(Ped ped1, Ped ped2) {
         DECORATOR::DECOR_SET_INT(ped2, "lemoyne", 0);
     }
 
-    PED::SET_RELATIONSHIP_BETWEEN_GROUPS(4, REL_GANG_LEMOYNE_RAIDERS, RELGROUPHASH_PLAYER);
+    PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, REL_GANG_LEMOYNE_RAIDERS, RELGROUPHASH_PLAYER);
 }
 
 // Função para gerar um Ped aleatório da lista e remover o modelo após o uso
@@ -138,9 +138,10 @@ void LemoyneMountSpawn() {
             if (PATHFIND::IS_POINT_ON_ROAD(x, y, z, ped1)) {
                 logMessage("Point is navigable, moving Ped 1.");
                 // Mover o cavalo diretamente para a coordenada de destino
-                TASK::TASK_MOVE_FOLLOW_ROAD_USING_NAVMESH(ped1, 1.001f, x, y, z, 0);
+                TASK::TASK_MOVE_FOLLOW_ROAD_USING_NAVMESH(ped1, 1.250f, x, y, z, 0);
                 ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped1, true);
                 ManagePedBlip(ped1, player);
+
                 // Configurar offset e garantir que ped2 siga sem ultrapassar
                 float safeDistance = 2.0f;  // Distância segura atrás de ped1
                 float minDistance = 1.5f;   // Distância mínima para seguir
@@ -153,7 +154,7 @@ void LemoyneMountSpawn() {
                 if (distance > minDistance) {
                     logMessage("Ped 2 following Ped 1.");
                     if (!ENTITY::IS_ENTITY_DEAD(ped2)) {
-                        TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped2, ped1, 0.0f, -safeDistance, 0.0f, 1.001f, -1, 0.500f, true, false, false, false, false, false);
+                        TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped2, ped1, 0.0f, -safeDistance, 0.0f, 1.250f, -1, 0.500f, true, false, false, false, false, false);
                         ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped2, true);
                     }
                 }
@@ -172,52 +173,11 @@ void LemoyneMountSpawn() {
                 ENTITY::DELETE_ENTITY(&horse2);
                 LemoyneMountSpawn();
             }
-
-            // Define o tempo necessário para que o ped fique parado (5 segundos em milissegundos)
-            const int tempoParadoNecessario = 5000;
-            // Define o tempo máximo para encerrar o script (6 segundos em milissegundos)
-            const int tempoMaximoExecucao = 6000;
-
-            BUILTIN::SETTIMERA(0); // Zera o temporizador no início
-            int tempoTotal = 0; // Variável para armazenar o tempo total de execução
-
-            while (true) {
-                // Verifica se o ped está parado
-                if (!PED::IS_PED_STOPPED(ped1)) {
-                    logMessage("LEMOYNE: Ped voltou a se mover.");
-                    BUILTIN::SETTIMERA(0); // Reseta o temporizador se o ped se mover
-                }
-
-                // Se o ped está parado, verificamos o tempo no temporizador
-                if (BUILTIN::TIMERA() >= tempoParadoNecessario) {
-                    logMessage("LEMOYNE: Ped está parado há 5 segundos. Apagando...");
-
-                    // Apaga as entidades após o ped ficar parado por 5 segundos
-                    ENTITY::DELETE_ENTITY(&ped1);
-                    ENTITY::DELETE_ENTITY(&ped2);
-                    ENTITY::DELETE_ENTITY(&horse1);
-                    ENTITY::DELETE_ENTITY(&horse2);
-
-                    // Invoca a função para gerar as montarias de Lemoyne
-                    LemoyneMountSpawn();
-                    break; // Sai do loop após apagar as entidades
-                }
-
-                // Verifica se o tempo total de execução chegou a 6 segundos
-                tempoTotal += 100;
-                if (tempoTotal >= tempoMaximoExecucao) {
-                    break; // Sai do loop após 6 segundos
-                }
-
-                // Aguarda 100 milissegundos antes de verificar novamente
-                WAIT(100);
-            }
-
         }
     }
     // Adicionando entidades à lista global
     globalEntityList.push_back(ped1);
     globalEntityList.push_back(ped2);
-    globalEntityList.push_back(horse1);
-    globalEntityList.push_back(horse2);
+    vehicleEntityList.push_back(horse1);
+    vehicleEntityList.push_back(horse2);
 }

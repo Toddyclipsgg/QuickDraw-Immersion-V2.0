@@ -2,8 +2,8 @@
 #include "spawngroupmanager.h"
 
 // Define membro plus/free
-#define MEMBER_PLUSGANG 0
-#define MEMBER_FREEGANG 1
+#define MEMBER_PLUSGANG 1
+#define MEMBER_FREEGANG 0
 
 #pragma warning(disable:4267)
 // Função que executa as funções de forma aleatória sem repetição
@@ -12,7 +12,7 @@ void spawnGroupManager() {
     // WAIT(30000);
 
     // Distância máxima permitida (100 metros)
-    double maxDistance = 100.0;
+    double maxDistance = 500.0;
 
     // Verificar se o jogador está a 100 metros de qualquer uma das localizações
     if (MISC::GET_MISSION_FLAG() || isPlayerWithinDistance(maxDistance)) {

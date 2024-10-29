@@ -1,18 +1,14 @@
 /*
-	THIS FILE IS A PART OF SCRIPTHOOK V2
-				https://ragemodding.org/rdr2/scripthook/
-			(C) RAGE Modding Collective 2024
+	THIS FILE IS A PART OF RDR 2 SCRIPT HOOK SDK
+				http://dev-c.com
+			(C) Alexander Blade 2019
 */
 
 #pragma once
 
 #include <windows.h>
-#include <cstdint> // Para uint64_t
 
 #define IMPORT __declspec(dllimport)
-
-// Declaração da função importada
-IMPORT void* getCommandFromHash(uint64_t hash);
 
 /* keyboard */
 
@@ -46,8 +42,6 @@ static void TERMINATE() { WAIT(MAXDWORD); }
 // make sure that you check game version before accessing globals because
 // ids may differ between patches
 IMPORT UINT64 *getGlobalPtr(int globalId);
-// Returns pointer to static variable in script
-IMPORT UINT64* getStaticPtr(const char* scriptName, int staticId);
 
 /* world */
 
@@ -58,11 +52,6 @@ IMPORT int worldGetAllVehicles(int *arr, int arrSize);
 IMPORT int worldGetAllPeds(int *arr, int arrSize);
 IMPORT int worldGetAllObjects(int *arr, int arrSize);
 IMPORT int worldGetAllPickups(int *arr, int arrSize);
-IMPORT int worldGetAllBlips(int* arr, int arrSize);
-IMPORT int worldGetAllBoxVolumes(int* arr, int arrSize);
-IMPORT int worldGetAllCylinderVolumes(int* arr, int arrSize);
-IMPORT int worldGetAllSphereVolumes(int* arr, int arrSize);
-IMPORT int worldGetAllCams(int* arr, int arrSize);
 
 /* misc */
 
@@ -71,13 +60,13 @@ IMPORT int worldGetAllCams(int* arr, int arrSize);
 // offsets may differ between patches
 IMPORT BYTE *getScriptHandleBaseAddress(int handle);
 
-IMPORT void switchLabel(const char* oldLabel, const char* newLabel);
-
 enum eGameVersion : int
 {
 	VER_AUTO,
-	VER_1_0_1491_18_RGS,
-	VER_1_0_1491_18_STEAM,
+	VER_1_0_1207_60_RGS,
+	VER_1_0_1207_69_RGS,
+
+	VER_SIZE,
 	VER_UNK = -1
 };
 

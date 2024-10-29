@@ -35,6 +35,7 @@
 #include <map>
 
 extern std::vector<Entity> globalEntityList;
+extern std::vector<Entity> vehicleEntityList;
 extern int selected_single_variation;
 extern std::vector<Ped> pedList;
 extern std::map<Ped, Blip> pedBlips;

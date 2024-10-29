@@ -36,6 +36,9 @@ Vehicle spawnVehicle(Hash modelHash, Vector3 spawnPosition, float heading)
     // Garante que o veículo seja corretamente colocado no solo
     VEHICLE::SET_VEHICLE_ON_GROUND_PROPERLY(vehicleEntity, 0);
 
+    // Define o veiculo visivel
+    // PED::_SET_RANDOM_OUTFIT_VARIATION(vehicleEntity, true);
+
     return vehicleEntity; // Retorna a referência do veículo
 }
 

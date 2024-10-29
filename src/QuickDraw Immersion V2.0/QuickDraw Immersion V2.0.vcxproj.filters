@@ -25,7 +25,7 @@
       <Filter>mod</Filter>
     </ClCompile>
     <ClCompile Include="GANG\odriscollsspawn.cpp">
-      <Filter>gang</Filter>
+      <Filter>gangmount</Filter>
     </ClCompile>
     <ClCompile Include="CREATORPED\setpresetped.cpp">
       <Filter>creatorped</Filter>
@@ -37,13 +37,13 @@
       <Filter>blip</Filter>
     </ClCompile>
     <ClCompile Include="GANG\lemoynespawn.cpp">
-      <Filter>gang</Filter>
+      <Filter>gangmount</Filter>
     </ClCompile>
     <ClCompile Include="GANG\spawngroupmanager.cpp">
-      <Filter>gang\spawngroupmanager</Filter>
+      <Filter>gangmount\spawngroupmanager</Filter>
     </ClCompile>
     <ClCompile Include="GANG\skinnerspawn.cpp">
-      <Filter>gang</Filter>
+      <Filter>gangmount</Filter>
     </ClCompile>
     <ClCompile Include="CREATORVEHICLE\spawnvehicle.cpp">
       <Filter>creatorvehicle</Filter>
@@ -88,7 +88,7 @@
       <Filter>mod</Filter>
     </ClInclude>
     <ClInclude Include="GANG\odriscollsspawn.h">
-      <Filter>gang</Filter>
+      <Filter>gangmount</Filter>
     </ClInclude>
     <ClInclude Include="CREATORPED\setpresetped.h">
       <Filter>creatorped</Filter>
@@ -103,13 +103,13 @@
       <Filter>blip</Filter>
     </ClInclude>
     <ClInclude Include="GANG\lemoynespawn.h">
-      <Filter>gang</Filter>
+      <Filter>gangmount</Filter>
     </ClInclude>
     <ClInclude Include="GANG\spawngroupmanager.h">
-      <Filter>gang\spawngroupmanager</Filter>
+      <Filter>gangmount\spawngroupmanager</Filter>
     </ClInclude>
     <ClInclude Include="GANG\skinnerspawn.h">
-      <Filter>gang</Filter>
+      <Filter>gangmount</Filter>
     </ClInclude>
     <ClInclude Include="CREATORVEHICLE\spawnvehicle.h">
       <Filter>creatorvehicle</Filter>
@@ -131,20 +131,20 @@
     <Filter Include="mod">
       <UniqueIdentifier>{c6f191bc-df99-41ad-8f5f-153bbbf23762}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gang">
-      <UniqueIdentifier>{2ed5c940-862e-4881-bbf8-48bdeaf6bcf5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="menu">
       <UniqueIdentifier>{6f1ac5d4-3238-4b1d-aba4-7bb7c0d241bf}</UniqueIdentifier>
     </Filter>
     <Filter Include="blip">
       <UniqueIdentifier>{2a3044d0-e421-4e4c-88a9-882ce3e6e0d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gang\spawngroupmanager">
-      <UniqueIdentifier>{7d4cd143-6a5c-449d-8918-b888d2f1c1fd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="creatorvehicle">
       <UniqueIdentifier>{5a80d11a-c897-442c-b692-070d29e02e6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gangmount">
+      <UniqueIdentifier>{2ed5c940-862e-4881-bbf8-48bdeaf6bcf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gangmount\spawngroupmanager">
+      <UniqueIdentifier>{7d4cd143-6a5c-449d-8918-b888d2f1c1fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

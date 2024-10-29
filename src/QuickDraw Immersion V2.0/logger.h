@@ -3,8 +3,8 @@
 #define LOGGER_H
 
 // Defina esta macro para habilitar o console
-#define CONSOLE_ENABLED 0
-#define INJECTION_CONSOLE_ENABLE 0
+#define CONSOLE_ENABLED 1
+#define INJECTION_CONSOLE_ENABLE 1
 
 #include <fstream>
 #include <thread>

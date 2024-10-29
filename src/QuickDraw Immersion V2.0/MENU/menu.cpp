@@ -3,8 +3,8 @@
 #include "menuconstructor.h"
 
 // Define membro plus/free
-#define MEMBER_PLUS 0
-#define MEMBER_FREE 1
+#define MEMBER_PLUS 1
+#define MEMBER_FREE 0
 
 // Variáveis globais para armazenar a hora, minuto e segundo
 int selectedHour = 0;   // Hora inicial
@@ -14,6 +14,11 @@ bool bPauseTime = false; // Para pausar ou despausar o tempo
 bool isTimePaused = false; // Inicia com false, pois o tempo não está pausado inicialmente
 
 void OpenWebsite() {
+    const char* url = "https://www.patreon.com/c/toddyclipsgg"; // Defina aqui o site que você quer abrir
+    ShellExecute(0, "open", url, NULL, NULL, SW_SHOWNORMAL); // Abre o navegador no site
+}
+
+void OpenMemberShip() {
     const char* url = "https://www.patreon.com/c/toddyclipsgg/membership"; // Defina aqui o site que você quer abrir
     ShellExecute(0, "open", url, NULL, NULL, SW_SHOWNORMAL); // Abre o navegador no site
 }
@@ -136,7 +141,7 @@ void startmenu()
 #endif // MEMBER_PLUS
 
 #if MEMBER_FREE
-        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("More Features, More Power. Click to Unlock!", OpenMemberShip);
 #endif // MEMBER_FREE
 
 #if MEMBER_PLUS
@@ -227,7 +232,7 @@ void startmenu()
             selected_single_variation = 1;
             SetGunTrickAnimation(selected_single_variation);
             });
-        addOptionPulse("Unlock +4 animations. Click to Unlock!", OpenWebsite);
+        addOptionPulse("Unlock +4 animations. Click to Unlock!", OpenMemberShip);
         break;
 
     case SubmenuPlusWeather:
@@ -255,7 +260,7 @@ void startmenu()
         addOption("Sandstorm", [] { SetWeather(MISC::GET_HASH_KEY("SANDSTORM"), "Sandstorm"); });
         addOption("Overcast Dark", [] { SetWeather(MISC::GET_HASH_KEY("OVERCASTDARK"), "Overcast Dark"); });
         addOption("Ground Blizzard", [] { SetWeather(MISC::GET_HASH_KEY("GROUNDBLIZZARD"), "Ground Blizzard"); });
-        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("Discover more mods for RDR2 and GTA 6.", OpenWebsite);
         break;
 
     case SubmenuFreeWeather:
@@ -267,7 +272,7 @@ void startmenu()
         addOption("Snow", [] { SetWeather(MISC::GET_HASH_KEY("SNOW"), "Snow"); });
         addOption("Misty", [] { SetWeather(MISC::GET_HASH_KEY("MISTY"), "Misty"); });
         addOption("Fog", [] { SetWeather(MISC::GET_HASH_KEY("FOG"), "Fog"); });
-        addOptionPulse("Desbloqueie + 16 weather. Click to Unlock!", OpenWebsite);
+        addOptionPulse("Desbloqueie + 16 weather. Click to Unlock!", OpenMemberShip);
         break;
 
     case SubmenuPlusTime:
@@ -277,7 +282,7 @@ void startmenu()
         addVectorOption("Minute", &selectedMinute, 1, 0, 59); // Seleção de minuto
         addVectorOption("Second", &selectedSecond, 1, 0, 59); // Seleção de segundo
         addBoolOption("Pause Time", bPauseTime, PauseTime); // Pausa o tempo
-        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("Discover more mods for RDR2 and GTA 6.", OpenWebsite);
         break;
 
     case SubmenuFreeTime:
@@ -286,7 +291,7 @@ void startmenu()
         addVectorOption("Hour", &selectedHour, 1, 0, 23); // Seleção de hora
         addVectorOption("Minute", &selectedMinute, 1, 0, 59); // Seleção de minuto
         addVectorOption("Second", &selectedSecond, 1, 0, 59); // Seleção de segundo
-        addOptionPulse("Unlock pause time. Click to Unlock!", OpenWebsite);
+        addOptionPulse("Unlock pause time. Click to Unlock!", OpenMemberShip);
         break;
 
     case Updates:
@@ -296,7 +301,7 @@ void startmenu()
         addUpdate("Update Gun Tricks 9ms to 5ms.");
         addUpdate("Simpler and more intuitive menu.");
         addUpdate("Add mounted gang O'driscoll.");
-        addOptionPulse("More Features, More Power. Click to Unlock!", OpenWebsite);
+        addOptionPulse("Discover more mods for RDR2 and GTA 6.", OpenWebsite);
         break;
     }
     resetVars(); // Reseta variáveis do menu
@@ -359,4 +364,10 @@ void DisplayPlayerCoordinatesPanel() {
 
     // Desenhar a orientação (heading) do jogador
     draw_Text(headingText, panelX + 0.24f, panelY + 0.007f, 255, 255, 255, 255);
+}
+
+// Revela o mapa
+void mapaHide()
+{
+    MAP::SET_MINIMAP_HIDE_FOW(true);
 }

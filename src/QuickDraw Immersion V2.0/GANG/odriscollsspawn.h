@@ -4,7 +4,6 @@ static std::vector<std::string> odriscoll = {
 	"G_M_M_UNIDUSTER_03",
 	"G_M_M_UNIDUSTER_02",
 	"G_M_M_UNIDUSTER_01",
-	"U_M_M_UniDusterLeader_01",
 	"G_M_M_UniDuster_01",
 	"G_M_M_UniDuster_02",
 	"G_M_M_UniDuster_03",
@@ -58,3 +57,4 @@ static std::vector<std::string> bronte = {
 
 void OdriscollsMountSpawn();
 std::string GetRandomOdriscollHash();
+void OdriscollsVehicleSpawn();

@@ -57,7 +57,7 @@
     <ProjectGuid>{8D82F34A-1D64-465B-84B1-37F89AD3D20B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>QuickDraw Immersion V2.0</RootNamespace>
-    <ProjectName>QuickDraw Immersion V2.3</ProjectName>
+    <ProjectName>QuickDraw Immersion V2.3.1</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

@@ -1,8 +1,9 @@
 #include "header.h"
 
-#define DEBUG_COORD 0
+#define DEBUG_COORD 1
 
 std::vector<Entity> globalEntityList;
+std::vector<Entity> vehicleEntityList;
 
 #pragma warning(disable:4326)
 // Função principal chamada a cada frame
@@ -24,6 +25,14 @@ void ScriptMain2() {
 
     while (true) {
 
+        if (IsKeyJustUp(0x34)) {
+            OdriscollsVehicleSpawn();
+        }
+
+        if (IsKeyJustUp(0x35)) {
+            OdriscollsMountSpawn();
+        }
+
 #if DEBUG_COORD
         DisplayPlayerCoordinatesPanel();
 #endif // DEBUG_COORD
@@ -42,7 +51,8 @@ void ScriptMain3() {
 
     while (true) {
 
-        DeleteEntitiesOnCondition(globalEntityList, 250.0f, true); // Chama a função de deletar entidades
+        DeleteVehiclesAndHorses(vehicleEntityList, 100.0f, true);
+        DeleteEntitiesOnCondition(globalEntityList, 100.0f, true); // Chama a função de deletar entidades
         WAIT(0); // Espera 1 segundo entre cada chamada para não sobrecarregar a execução
     }
 }

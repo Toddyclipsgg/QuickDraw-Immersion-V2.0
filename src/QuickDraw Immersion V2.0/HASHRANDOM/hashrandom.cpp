@@ -37,6 +37,58 @@ std::string GetRandomHorseHash() {
 	return selectedHorseHash;
 }
 
+// Função para gerar coordenadas opostas à posição atual do jogador
+std::pair<std::string, Vector3> GetRandomCoord() {
+	// Semente para o gerador de números aleatórios
+	std::srand(static_cast<unsigned int>(std::time(0)));
+
+	// Verificar se ainda há coordenadas disponíveis
+	if (availableCoordList.empty()) {
+		// Reiniciar a lista se todas as coordenadas já foram usadas
+		availableCoordList = coordenadas;
+		usedCoordList.clear(); // Limpa as coordenadas usadas
+	}
+
+	// ID do jogador e coordenadas atuais
+	Ped playerPed = PLAYER::PLAYER_PED_ID();
+	Vector3 playerPos = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
+
+	// Variáveis para armazenar a coordenada mais distante
+	std::pair<std::string, Vector3> farthestCoord;
+	float maxDistance = -1.0f;
+
+	// Encontrar a coordenada mais distante do jogador
+	for (const auto& coord : availableCoordList) {
+		float distance = MISC::GET_DISTANCE_BETWEEN_COORDS(
+			playerPos.x, playerPos.y, playerPos.z,
+			coord.second.x, coord.second.y, coord.second.z, true);
+
+		// Se a distância for maior que a máxima encontrada, atualizar
+		if (distance > maxDistance) {
+			maxDistance = distance;
+			farthestCoord = coord;
+		}
+	}
+
+	// Mover a coordenada selecionada para a lista de usadas
+	usedCoordList.push_back(farthestCoord);
+
+	// Encontrar e remover a coordenada mais distante da lista disponível
+	for (auto it = availableCoordList.begin(); it != availableCoordList.end(); ++it) {
+		if (it->first == farthestCoord.first &&
+			it->second.x == farthestCoord.second.x &&
+			it->second.y == farthestCoord.second.y &&
+			it->second.z == farthestCoord.second.z) {
+			availableCoordList.erase(it);
+			break;
+		}
+	}
+
+	// Retornar a coordenada mais distante encontrada
+	return farthestCoord;
+}
+
+/*
 // Função para gerar coordenadas aleatórias e remover após o uso
 std::pair<std::string, Vector3> GetRandomCoord() {
 	// Semente para o gerador de números aleatórios
@@ -64,6 +116,7 @@ std::pair<std::string, Vector3> GetRandomCoord() {
 	// Retornar a coordenada selecionada
 	return selectedCoord;
 }
+*/
 
 bool isPlayerWithinDistance(double maxDistance) {
 	// Obter a entidade do jogador (Ped)
