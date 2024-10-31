@@ -149,3 +149,19 @@ bool isPlayerWithinDistance(double maxDistance) {
 	// Se não estiver perto de nenhuma localização, retornar false
 	return false;
 }
+
+// Função para verificar se a entidade está dentro do raio proibido
+bool IsSpawnRestricted(const Vector3& spawnCoords) {
+	const float restrictedRadius = 500.0f; // Raio de 500 metros
+	for (const auto& location : locations) {
+		float distance = BUILTIN::VDIST(
+			spawnCoords.x, spawnCoords.y, spawnCoords.z,
+			location.coords.x, location.coords.y, location.coords.z
+		);
+		if (distance <= restrictedRadius) {
+			logMessage("Spawn restriction active near location: " + std::string(location.name));
+			return true; // *Spawn* está proibido
+		}
+	}
+	return false; // Fora da área de restrição
+}

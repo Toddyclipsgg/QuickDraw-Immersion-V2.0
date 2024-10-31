@@ -119,6 +119,7 @@ void SkinnerMountSpawn() {
         std::pair<std::string, Vector3> destino;
         // Gerar novas coordenadas até encontrar uma suficientemente perto e longe o suficiente
         while (tentativaAtual < tentativasMax) {
+            WAIT(100);
             destino = GetRandomCoord();  // Gerar uma coordenada aleatória
             distancia = CalcularDistancia(ped1Coords, destino.second);  // Calcular a distância a partir do ped1
             logMessage("Attempt " + std::to_string(tentativaAtual) + ": Checking distance for generated coordinate.");
@@ -140,7 +141,6 @@ void SkinnerMountSpawn() {
                 // Mover o cavalo diretamente para a coordenada de destino
                 TASK::TASK_MOVE_FOLLOW_ROAD_USING_NAVMESH(ped1, 1.250f, x, y, z, 0);
                 ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped1, true);
-                ManagePedBlip(ped1, player);
 
                 // Configurar offset e garantir que ped2 siga sem ultrapassar
                 float safeDistance = 2.0f;  // Distância segura atrás de ped1
@@ -171,6 +171,7 @@ void SkinnerMountSpawn() {
                 ENTITY::DELETE_ENTITY(&ped2);
                 ENTITY::DELETE_ENTITY(&horse1);
                 ENTITY::DELETE_ENTITY(&horse2);
+                WAIT(2000);
                 SkinnerMountSpawn();
             }
         }

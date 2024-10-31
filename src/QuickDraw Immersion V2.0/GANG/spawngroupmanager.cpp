@@ -2,8 +2,8 @@
 #include "spawngroupmanager.h"
 
 // Define membro plus/free
-#define MEMBER_PLUSGANG 1
-#define MEMBER_FREEGANG 0
+#define MEMBER_PLUSGANG 0
+#define MEMBER_FREEGANG 1
 
 #pragma warning(disable:4267)
 // Função que executa as funções de forma aleatória sem repetição

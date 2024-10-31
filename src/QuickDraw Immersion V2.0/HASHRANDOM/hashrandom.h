@@ -257,4 +257,5 @@ static std::vector<Location> locations = {
 std::string GetRandomHorseHash();
 std::pair<std::string, Vector3> GetRandomCoord();
 bool isPlayerWithinDistance(double maxDistance);
+bool IsSpawnRestricted(const Vector3& spawnCoords);
 // std::string GetRandomSaddleHash();

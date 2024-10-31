@@ -29,10 +29,6 @@ void ScriptMain2() {
             OdriscollsVehicleSpawn();
         }
 
-        if (IsKeyJustUp(0x35)) {
-            OdriscollsMountSpawn();
-        }
-
 #if DEBUG_COORD
         DisplayPlayerCoordinatesPanel();
 #endif // DEBUG_COORD
