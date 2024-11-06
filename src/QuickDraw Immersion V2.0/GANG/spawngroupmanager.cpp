@@ -1,50 +1,56 @@
 #include "..\header.h"
 #include "spawngroupmanager.h"
 
+// Define teste/produto
+#define TEST_SPAWN 0
+#define PRODUCT_FINAL 1
+
 // Define membro plus/free
-#define MEMBER_PLUSGANG 0
-#define MEMBER_FREEGANG 1
+#define MEMBER_PLUSGANG 1
+#define MEMBER_FREEGANG 0
 
 #pragma warning(disable:4267)
-// FunÁ„o que executa as funÁıes de forma aleatÛria sem repetiÁ„o
+
 void spawnGroupManager() {
+    
+#if PRODUCT_FINAL
     WAIT(150000);
-    // WAIT(30000);
+#endif // PRODUCT_FINAL
 
-    // Dist‚ncia m·xima permitida (100 metros)
-    double maxDistance = 500.0;
+#if TEST_SPAWN
+    WAIT(30000);
+#endif // TEST_SPAWN
 
-    // Verificar se o jogador est· a 100 metros de qualquer uma das localizaÁıes
+    // Dist√¢ncia m√°xima permitida (100 metros)
+    const double maxDistance = 500.0;
+
+    // Verificar se o jogador est√° a 100 metros de qualquer uma das localiza√ß√µes
     if (MISC::GET_MISSION_FLAG() || isPlayerWithinDistance(maxDistance)) {
         logMessage("Player is within 100 meters of a camp or on a mission.");
         return;
-    }
-    else {
+    } else {
         logMessage("Player is not within 100 meters of any camp or on a mission.");
     }
 
+    std::vector<int> group;
+
 #if MEMBER_PLUSGANG
-std::vector<int> group = { 1, 2, 3 };  // Õndices das funÁıes
-#endif // MEMBER_PLUSGANG
-
-#if MEMBER_FREEGANG
-std::vector<int> group = { 1 };  // Õndices das funÁıes
-#endif // MEMBER_FREEGANG
-
-    
+    group = { 1, 2, 3 };  // √çndices das fun√ß√µes
+#elif MEMBER_FREEGANG
+    group = { 1, 2 };  // √çndices das fun√ß√µes
+#endif // MEMBER_PLUSGANG / MEMBER_FREEGANG
 
     if (group.empty()) {
         return;
     }
 
-    // Embaralha as funÁıes
-
+    // Embaralha as fun√ß√µes
     std::random_device rd;
     std::mt19937 g(rd());
     std::uniform_int_distribution<> dist(0, group.size() - 1);
     int indexChosen = group[dist(g)];
 
-    // Executa as funÁıes conforme a ordem embaralhada
+    // Executa as fun√ß√µes conforme a ordem embaralhada
     switch (indexChosen) {
     case 1:
         logMessage("O'driscolls starting...");
@@ -52,9 +58,13 @@ std::vector<int> group = { 1 };  // Õndices das funÁıes
         break;
     case 2:
         logMessage("Lemoyne starting...");
-        LemoyneMountSpawn();
+        OdriscollsVehicleSpawn();
         break;
     case 3:
+        logMessage("Lemoyne starting...");
+        LemoyneMountSpawn();
+        break;
+    case 4:
         logMessage("Skinner starting...");
         SkinnerMountSpawn();
         break;
@@ -63,4 +73,5 @@ std::vector<int> group = { 1 };  // Õndices das funÁıes
         break;
     }
 }
+
 #pragma warning(default:4267)

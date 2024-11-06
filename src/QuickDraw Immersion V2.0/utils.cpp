@@ -1,44 +1,36 @@
 #include "header.h"
 
-// Função para calcular distância 3D entre o ped e as coordenadas fornecidas
-float CalcularDistancia(Vector3 pedCoords, Vector3 destinoCoords) {
-    return BUILTIN::VDIST(pedCoords.x, pedCoords.y, pedCoords.z, destinoCoords.x, destinoCoords.y, destinoCoords.z);
-}
-
-// Função para calcular a distância entre dois pontos no espaço 3D
-float calcularDistanciaObstacle(Vector3 pos1, Vector3 pos2) {
-    return BUILTIN::SQRT(BUILTIN::POW(pos2.x - pos1.x, 2) + BUILTIN::POW(pos2.y - pos1.y, 2) + BUILTIN::POW(pos2.z - pos1.z, 2));
-}
-
-// Função para calcular a distância horizontal entre duas entidades (2D)
-float distanceBetweenEntitiesHor(Entity entity1, Entity entity2)
+// FunÃ§Ã£o que calcula o hash de uma string usando a funÃ§Ã£o JOAAT (algoritmo hash especÃ­fico do jogo)
+Hash joaat(const char* string)
 {
-    // Obtendo as coordenadas das entidades
-    Vector3 pos1 = ENTITY::GET_ENTITY_COORDS(entity1, 1, 0);
-    Vector3 pos2 = ENTITY::GET_ENTITY_COORDS(entity2, 1, 0);
-    // Calculando a distância horizontal entre as entidades
-    float distance = MISC::GET_DISTANCE_BETWEEN_COORDS(pos1.x, pos1.y, 0, pos2.x, pos2.y, 0, 1);
-    logMessage("2D distance calculated successfully.");
-    return distance;
+    return MISC::GET_HASH_KEY(string); // Usa a funÃ§Ã£o nativa para obter o hash da string fornecida
 }
 
-// Função para excluir entidades com base em condições específicas
-bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath) {
-    Player playerPed = PLAYER::PLAYER_PED_ID();
-    if (!playerPed) return false;  // Verificação inicial de validação do jogador
+// FunÃ§Ã£o para calcular distÃ¢ncia 3D entre duas coordenadas
+float CalculateDistance(const Vector3& pos1, const Vector3& pos2) {
+    return BUILTIN::VDIST(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+}
 
-    // Checa se o jogador está morto e deleteOnPlayerDeath está ativado
+// FunÃ§Ã£o para calcular a distÃ¢ncia horizontal entre duas entidades (2D)
+float DistanceBetweenEntitiesHor(Entity entity1, Entity entity2) {
+    if (!ENTITY::DOES_ENTITY_EXIST(entity1) || !ENTITY::DOES_ENTITY_EXIST(entity2)) {
+        return 0.0f;
+    }
+    Vector3 pos1 = ENTITY::GET_ENTITY_COORDS(entity1, true, false);
+    Vector3 pos2 = ENTITY::GET_ENTITY_COORDS(entity2, true, false);
+    return MISC::GET_DISTANCE_BETWEEN_COORDS(pos1.x, pos1.y, 0.0f, pos2.x, pos2.y, 0.0f, true);
+}
+
+// FunÃ§Ã£o para excluir entidades com base em condiÃ§Ãµes especÃ­ficas
+bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath) {
+    constexpr int BATCH_SIZE = 4;
+    int processedEntities = 0;
+    Player playerPed = PLAYER::PLAYER_PED_ID();
+
+    if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return false;
+
     if (deleteOnPlayerDeath && ENTITY::IS_ENTITY_DEAD(playerPed)) {
-        logMessage("Player is dead. Deleting all entities.");
-        for (Entity& entity : entities) {
-            if (ENTITY::DOES_ENTITY_EXIST(entity)) {
-                ENTITY::DELETE_ENTITY(&entity);
-                // Certifica que veículos e cavalos sejam excluídos também
-                DeleteVehiclesAndHorses(vehicleEntityList, 250.0f, true);
-            }
-        }
-        entities.clear();  // Limpar a lista de entidades
-        return true;
+        return DeleteEntities(entities, BATCH_SIZE);
     }
 
     Vector3 playerCoords = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
@@ -51,150 +43,185 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
         }
 
         Vector3 entityCoords = ENTITY::GET_ENTITY_COORDS(*it, true, false);
-        float distance = BUILTIN::VDIST2(playerCoords.x, playerCoords.y, playerCoords.z, entityCoords.x, entityCoords.y, entityCoords.z);
+        float distance = CalculateDistance(playerCoords, entityCoords);
 
         if (distance > maxDistance * maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
-            logMessage("Marking entity as no longer needed: out of range or dead.");
             ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&(*it));
-            DeleteVehiclesAndHorses(vehicleEntityList, 250.0f, true); // Chamada para deletar veículos e cavalos
+            DeleteVehiclesAndHorsesDead(vehicleEntityList, 250.0f);
             pedStopTimes.erase(*it);
             it = entities.erase(it);
             continue;
         }
 
-        if (PED::IS_PED_STOPPED(*it)) {
-            if (CheckEntityObstacles(*it)) {
-                ++it;  // Pular exclusão se houver obstáculos
-                continue;
-            }
-
-            if (HandleEntityInteractions(*it, playerPed)) {
-                ++it;  // Pular exclusão se estiver interagindo com o jogador
-                continue;
-            }
-
-            if (HandleCombatStatus(*it, playerPed)) {
-                ++it;  // Pular exclusão se estiver em combate
-                continue;
-            }
-
-            if (pedStopTimes.find(*it) == pedStopTimes.end()) {
-                pedStopTimes[*it] = BUILTIN::TIMERA();
-                logMessage("Ped stopped, starting timer.");
-            }
-            else if (BUILTIN::TIMERA() - pedStopTimes[*it] > 11000) {
-                logMessage("Ped has been stopped for over 11 seconds, deleting entity immediately.");
-                ENTITY::DELETE_ENTITY(&(*it));
-                DeleteVehiclesAndHorses(vehicleEntityList, 250.0f, true); // Deletar veículos e cavalos
-                pedStopTimes.erase(*it);
-                it = entities.erase(it);
-                continue;
-            }
+        if (ShouldDeleteEntity(*it, playerPed, pedStopTimes)) {
+            it = entities.erase(it);
+            continue;
         }
-        else {
-            pedStopTimes.erase(*it);
-        }
+
         ++it;
+        processedEntities++;
+
+        if (processedEntities >= BATCH_SIZE) {
+            break;
+        }
     }
     return true;
 }
 
-// Função para verificar obstáculos ao redor da entidade
+bool ShouldDeleteEntity(Entity entity, Player playerPed, std::unordered_map<Entity, int>& pedStopTimes) {
+    if ((PED::IS_PED_STOPPED(entity) || VEHICLE::IS_VEHICLE_STOPPED(entity)) &&
+        !CheckEntityObstacles(entity) &&
+        !HandleEntityInteractions(entity, playerPed) &&
+        !HandleCombatStatus(entity, playerPed)) {
+
+        if (pedStopTimes.find(entity) == pedStopTimes.end()) {
+            pedStopTimes[entity] = BUILTIN::TIMERA();
+        } else if (BUILTIN::TIMERA() - pedStopTimes[entity] > 11000) {
+            ENTITY::DELETE_ENTITY(&entity);
+            DeleteVehiclesAndHorses(vehicleEntityList, 250.0f, true);
+            pedStopTimes.erase(entity);
+            return true;
+        }
+    } else {
+        pedStopTimes.erase(entity);
+    }
+    return false;
+}
+
+// FunÃ§Ã£o para verificar obstÃ¡culos ao redor da entidade
 bool CheckEntityObstacles(Entity ped) {
+    if (!ENTITY::DOES_ENTITY_EXIST(ped)) return false;
+
     int vehicles[256];
     int totalVehicles = worldGetAllVehicles(vehicles, 256);
     Entity pedVehicle = PED::GET_VEHICLE_PED_IS_IN(ped, false);
     Entity pedMount = PED::GET_MOUNT(ped);
 
-    // Verificação de obstáculos em veículos e montaria
     for (int i = 0; i < totalVehicles; ++i) {
-        if (vehicles[i] != pedVehicle && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, vehicles[i], 1)) {
-            logMessage("Obstacle detected near entity. Skipping deletion.");
+        if (vehicles[i] != pedVehicle && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, vehicles[i], true)) {
             return true;
         }
     }
-    return pedMount && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, pedMount, 1);
+    return pedMount && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, pedMount, true);
 }
 
-// Função para checar interações entre ped e jogador
+// FunÃ§Ã£o para checar interaÃ§Ãµes entre ped e jogador
 bool HandleEntityInteractions(Entity ped, Player player) {
+    if (!ENTITY::DOES_ENTITY_EXIST(ped) || !ENTITY::DOES_ENTITY_EXIST(player)) return false;
+
     if (PED::IS_PED_ON_MOUNT(ped)) {
         Ped rider = PED::GET_MOUNT(ped);
-        if (rider && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(rider, player, 1) &&
+        if (ENTITY::DOES_ENTITY_EXIST(rider) &&
+            ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(rider, player, true) &&
             (PED::GET_IS_PED_RESPONDING_TO_POSITIVE_INTERACTION(rider, player) ||
                 PED::GET_IS_PED_RESPONDING_TO_NEGATIVE_INTERACTION(rider, player))) {
-            logMessage("Ped on horse is interacting with the player. Skipping deletion.");
             return true;
         }
     }
 
-    for (int seatIndex = -1; seatIndex <= -2; ++seatIndex) {
+    for (int seatIndex = -1; seatIndex >= -2; --seatIndex) {
         Ped pedInSeat = VEHICLE::GET_PED_IN_VEHICLE_SEAT(ped, seatIndex);
-        if (pedInSeat && pedInSeat != player && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(pedInSeat, player, 1) &&
+        if (ENTITY::DOES_ENTITY_EXIST(pedInSeat) && pedInSeat != player &&
+            ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(pedInSeat, player, true) &&
             (PED::GET_IS_PED_RESPONDING_TO_POSITIVE_INTERACTION(pedInSeat, player) ||
                 PED::GET_IS_PED_RESPONDING_TO_NEGATIVE_INTERACTION(pedInSeat, player))) {
-            logMessage("Ped in vehicle is interacting with the player. Skipping deletion.");
             return true;
         }
     }
     return false;
 }
 
-// Função para verificar o status de combate da entidade
+// FunÃ§Ã£o para verificar o status de combate da entidade
 bool HandleCombatStatus(Entity ped, Player player) {
-    if (PED::IS_PED_IN_MELEE_COMBAT(ped) || PED::IS_PED_IN_COMBAT(ped, player)) {
-        logMessage("Ped is in combat with player. Ignoring exclusion.");
-        return true;
-    }
-    return false;
+    if (!ENTITY::DOES_ENTITY_EXIST(ped) || !ENTITY::DOES_ENTITY_EXIST(player)) return false;
+
+    return PED::IS_PED_IN_MELEE_COMBAT(ped) || PED::IS_PED_IN_COMBAT(ped, player);
 }
 
-// Função para excluir veículos e cavalos com base em condições específicas
+// FunÃ§Ã£o para excluir veÃ­culos e cavalos com base em condiÃ§Ãµes especÃ­ficas
 bool DeleteVehiclesAndHorses(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath) {
+    constexpr int BATCH_SIZE = 2;
+    int processedEntities = 0;
     Player playerPed = PLAYER::PLAYER_PED_ID();
-    Vector3 playerCoords = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
 
-    // Checa se o jogador está morto e deleteOnPlayerDeath está ativado
+    if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return false;
+
     if (deleteOnPlayerDeath && ENTITY::IS_ENTITY_DEAD(playerPed)) {
-        logMessage("Player is dead. Deleting all vehicles and horses.");
-        for (Entity& entity : entities) {
-            if (ENTITY::DOES_ENTITY_EXIST(entity)) ENTITY::DELETE_ENTITY(&entity);
-        }
-        entities.clear();
-        return true;
+        return DeleteEntities(entities, BATCH_SIZE);
     }
 
-    // Verificação de distância e estado dos assentos do veículo
     for (auto it = entities.begin(); it != entities.end();) {
         if (!ENTITY::DOES_ENTITY_EXIST(*it)) {
             it = entities.erase(it);
             continue;
         }
 
-        // Calcular a distância entre o jogador e a entidade
-        float distance = BUILTIN::VDIST2(playerCoords.x, playerCoords.y, playerCoords.z,
-            ENTITY::GET_ENTITY_COORDS(*it, true, false).x,
-            ENTITY::GET_ENTITY_COORDS(*it, true, false).y,
-            ENTITY::GET_ENTITY_COORDS(*it, true, false).z);
+        if (ShouldDeleteVehicleOrHorse(*it)) {
+            it = entities.erase(it);
+            continue;
+        }
 
-        // Marcar como não necessário se estiver fora do alcance
-        if (distance > maxDistance * maxDistance) {
-            logMessage("Vehicle or horse out of range. Marking as no longer needed.");
+        ++it;
+        processedEntities++;
+
+        if (processedEntities >= BATCH_SIZE) {
+            break;
+        }
+    }
+    return true;
+}
+
+bool ShouldDeleteVehicleOrHorse(Entity entity) {
+    if (VEHICLE::IS_VEHICLE_STOPPED(entity) || PED::_IS_MOUNT_SEAT_FREE(entity, -1) || 
+        (VEHICLE::IS_VEHICLE_SEAT_FREE(entity, -1) && VEHICLE::IS_VEHICLE_SEAT_FREE(entity, -2))) {
+        ENTITY::DELETE_ENTITY(&entity);
+        return true;
+    }
+    return false;
+}
+
+// FunÃ§Ã£o para excluir veÃ­culos e cavalos mortos com base em condiÃ§Ãµes especÃ­ficas
+void DeleteVehiclesAndHorsesDead(std::vector<Entity>& entities, float maxDistance) {
+    constexpr int BATCH_SIZE = 2;
+    int processedEntities = 0;
+    Player playerPed = PLAYER::PLAYER_PED_ID();
+
+    if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return;
+
+    Vector3 playerCoords = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
+
+    for (auto it = entities.begin(); it != entities.end();) {
+        if (!ENTITY::DOES_ENTITY_EXIST(*it)) {
+            it = entities.erase(it);
+            continue;
+        }
+
+        float distance = CalculateDistance(playerCoords, ENTITY::GET_ENTITY_COORDS(*it, true, false));
+
+        if (distance > maxDistance * maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
             ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&(*it));
             it = entities.erase(it);
             continue;
         }
 
-        // Excluir veículos parados com assentos vazios
-        if (VEHICLE::IS_VEHICLE_STOPPED(*it)) {
-                logMessage("Vehicle stopeed. Deleting entity.");
-                ENTITY::DELETE_ENTITY(&(*it));
-                it = entities.erase(it);
-                continue;
-        }
-
-        // Avançar para a próxima entidade caso não atenda às condições de exclusão
         ++it;
+        processedEntities++;
+
+        if (processedEntities >= BATCH_SIZE) {
+            break;
+        }
     }
-    return true;
+}
+
+bool DeleteEntities(std::vector<Entity>& entities, int batchSize) {
+    int processedEntities = 0;
+    for (auto it = entities.begin(); it != entities.end();) {
+        if (ENTITY::DOES_ENTITY_EXIST(*it)) {
+            ENTITY::DELETE_ENTITY(&(*it));
+        }
+        it = entities.erase(it);
+        processedEntities++;
+        if (processedEntities >= batchSize) break;
+    }
+    return entities.empty();
 }

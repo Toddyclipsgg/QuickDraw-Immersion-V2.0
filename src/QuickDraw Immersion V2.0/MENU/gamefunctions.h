@@ -5,13 +5,6 @@
 const std::vector<const char*> FontList = { "body", "body1", "catalog1", "catalog2", "catalog3", "catalog4", "catalog5", "chalk",
 "Debug_BOLD", "FixedWidthNumbers", "Font5", "gamername", "handwritten", "ledger", "RockstarTAG", "SOCIAL_CLUB_COND_BOLD", "title", "wantedPostersGeneric" };
 
-
-// Função que calcula o hash de uma string usando a função JOAAT (algoritmo hash específico do jogo)
-Hash joaat(const char* string)
-{
-    return MISC::GET_HASH_KEY(string); // Usa a função nativa para obter o hash da string fornecida
-}
-
 // Função para desenhar uma sprite (imagem 2D) na tela
 void DrawSprite(const char* category, const char* sprite, float x, float y, float scalex, float scaley, float rotation, int r, int g, int b, int a)
 {

@@ -46,9 +46,16 @@ typedef int AnimScene;
 
 struct Vector3
 {
-	ALIGN8 float x;
-	ALIGN8 float y;
-	ALIGN8 float z;
+    ALIGN8 float x;
+    ALIGN8 float y;
+    ALIGN8 float z;
+
+    // Construtor que aceita três argumentos float
+    Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {}
+
+    bool isZero() const {
+        return x == 0.0f && y == 0.0f && z == 0.0f;
+    }
 };
 
 static_assert(sizeof(Vector3) == 24, "");

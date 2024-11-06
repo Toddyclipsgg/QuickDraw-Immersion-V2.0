@@ -1,24 +1,24 @@
 #include "..\header.h"
 
-// FunÁ„o para criar um veÌculo a partir de um nome de modelo
-Vehicle spawnVehicleByName(char* vehicleModel, Vector3 position, float heading)
+// Fun√ß√£o para criar um ve√≠culo a partir de um nome de modelo
+Vehicle spawnVehicleByName(const char* vehicleModel, Vector3 position, float heading)
 {
     Hash modelHash = MISC::GET_HASH_KEY(vehicleModel);  // Obter o hash do nome do modelo
-    return spawnVehicle(modelHash, position, heading); // Chama a funÁ„o principal para criar o veÌculo
+    return spawnVehicle(modelHash, position, heading); // Chama a fun√ß√£o principal para criar o ve√≠culo
 }
 
-// FunÁ„o para criar um veÌculo usando um hash especÌfico de veÌculo
+// Fun√ß√£o para criar um ve√≠culo usando um hash espec√≠fico de ve√≠culo
 Vehicle spawnVehicleByHash(VehicleHash vehicleHash, Vector3 position, float heading)
 {
-    return spawnVehicle((Hash)vehicleHash, position, heading); // Redireciona para a funÁ„o principal
+    return spawnVehicle(static_cast<Hash>(vehicleHash), position, heading); // Redireciona para a fun√ß√£o principal
 }
 
-// FunÁ„o principal que cria um veÌculo com base no hash do modelo
+// Fun√ß√£o principal que cria um ve√≠culo com base no hash do modelo
 Vehicle spawnVehicle(Hash modelHash, Vector3 spawnPosition, float heading)
 {
     Vehicle vehicleEntity;
 
-    // Verifica se o modelo est· carregado, caso contr·rio, solicita o carregamento
+    // Verifica se o modelo est√° carregado, caso contr√°rio, solicita o carregamento
     if (!STREAMING::HAS_MODEL_LOADED(modelHash))
     {
         STREAMING::REQUEST_MODEL(modelHash, false);
@@ -30,20 +30,20 @@ Vehicle spawnVehicle(Hash modelHash, Vector3 spawnPosition, float heading)
         WAIT(0);
     }
 
-    // Cria o veÌculo na posiÁ„o e direÁ„o especificada
+    // Cria o ve√≠culo na posi√ß√£o e dire√ß√£o especificada
     vehicleEntity = VEHICLE::CREATE_VEHICLE(modelHash, spawnPosition.x, spawnPosition.y, spawnPosition.z, heading, true, true, false, false);
 
-    // Garante que o veÌculo seja corretamente colocado no solo
+    // Garante que o ve√≠culo seja corretamente colocado no solo
     VEHICLE::SET_VEHICLE_ON_GROUND_PROPERLY(vehicleEntity, 0);
 
-    // Define o veiculo visivel
+    // Define o ve√≠culo vis√≠vel
     // PED::_SET_RANDOM_OUTFIT_VARIATION(vehicleEntity, true);
 
-    return vehicleEntity; // Retorna a referÍncia do veÌculo
+    return vehicleEntity; // Retorna a refer√™ncia do ve√≠culo
 }
 
-// FunÁ„o para adicionar uma carga ao veÌculo
+// Fun√ß√£o para adicionar uma carga ao ve√≠culo
 void attachCargoToVehicle(Vehicle vehicle, VehicleCargoHash cargoType)
 {
-    PROPSET::_ADD_PROP_SET_FOR_VEHICLE(vehicle, cargoType); // Utiliza o hash para definir a carga do veÌculo
+    PROPSET::_ADD_PROP_SET_FOR_VEHICLE(vehicle, cargoType); // Utiliza o hash para definir a carga do ve√≠culo
 }

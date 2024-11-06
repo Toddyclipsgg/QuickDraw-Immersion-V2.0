@@ -20,6 +20,7 @@ void main() {
 
 // Função da thread adicional
 void ScriptMain2() {
+    BUILTIN::SET_THIS_THREAD_PRIORITY(0);
     Ped player = PLAYER::PLAYER_PED_ID();
     printStartMod();
 

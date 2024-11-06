@@ -57,3 +57,4 @@ extern std::map<Ped, Blip> pedBlips;
 #include "MOD\twirl.h"
 #include "BLIP\blips.h"
 #include "CREATORVEHICLE\spawnvehicle.h"
+#include "testtwirl.h"

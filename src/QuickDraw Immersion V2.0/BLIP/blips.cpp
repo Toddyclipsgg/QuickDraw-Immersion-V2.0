@@ -1,13 +1,13 @@
 #include "..\header.h"
 
-// Vari·veis globais
+// Vari√°veis globais
 std::vector<Ped> pedList; // Lista global de peds
-std::map<Ped, Blip> pedBlips; // Mapa para armazenar a relaÁ„o ped -> blip
+std::map<Ped, Blip> pedBlips; // Mapa para armazenar a rela√ß√£o ped -> blip
 
 Blip createBlip(Vector3 pos, Hash blipType, Hash blipSprite)
 {
 	Blip blip;
-	Object dummyProp = createProp("p_shotGlass01x", pos, true, false, false);
+	Object dummyProp = createProp("p_shotGlass01x", pos, 0.0f, true, false);
 
 	blip = MAP::BLIP_ADD_FOR_ENTITY(blipType, dummyProp); // Add blip for dummy prop
 	if (blipSprite != 0)
@@ -77,39 +77,39 @@ Object createProp(const char* model, Vector3 position, float heading, bool isSta
 	return prop;
 }
 
-// FunÁ„o para gerenciar o blip de um ped
+// Fun√ß√£o para gerenciar o blip de um ped
 void ManagePedBlip(Ped ped, Player player) {
-	// Verificar se o ped existe e est· vivo
+	// Verificar se o ped existe e est√° vivo
 	if (ENTITY::DOES_ENTITY_EXIST(ped) && !ENTITY::IS_ENTITY_DEAD(ped)) {
-		Blip& targetBlip = pedBlips[ped]; // ReferÍncia para o blip associado ao ped
+		Blip& targetBlip = pedBlips[ped]; // Refer√™ncia para o blip associado ao ped
 
-		// Se o blip ainda n„o foi criado, cri·-lo
-		if (targetBlip == NULL) {
-			targetBlip = createBlip(ped, MISC::GET_HASH_KEY("BLIP_STYLE_RANDOM_EVENT_PULSE"));
+		// Se o blip ainda n√£o foi criado, cri√°-lo
+		if (targetBlip == 0) {
+			targetBlip = createBlip(ped, MISC::GET_HASH_KEY("BLIP_STYLE_RANDOM_EVENT_PULSE"), 0);
 			logMessage("Blip created for the ped.");
 		}
 
-		// Verificar linha de vis„o entre o jogador e o ped para remover o blip
+		// Verificar linha de vis√£o entre o jogador e o ped para remover o blip
 		if (ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(player, ped, 1)) {
-			// Se h· linha de vis„o, remover o blip
+			// Se h√° linha de vis√£o, remover o blip
 			deleteBlipSafe(&targetBlip);
 			logMessage("Blip removed due to clear LOS.");
 		}
 	}
 	else {
-		// Se o ped estiver morto ou n„o existir, remover o blip
+		// Se o ped estiver morto ou n√£o existir, remover o blip
 		Blip& targetBlip = pedBlips[ped];
-		if (targetBlip != NULL) {
+		if (targetBlip != 0) {
 			deleteBlipSafe(&targetBlip);
-			targetBlip = NULL;  // Limpar o blip no mapa
+			targetBlip = 0;  // Limpar o blip no mapa
 			logMessage("Blip removed because ped is dead or doesn't exist.");
 		}
 	}
 }
 
-// FunÁ„o no loop principal para gerenciar os blips de todos os peds
+// Fun√ß√£o no loop principal para gerenciar os blips de todos os peds
 void ManageAllPedBlips(Player player) {
 	for (auto& ped : pedList) {
-		ManagePedBlip(ped, player); // Chamar a funÁ„o para cada ped
+		ManagePedBlip(ped, player); // Chamar a fun√ß√£o para cada ped
 	}
 }
