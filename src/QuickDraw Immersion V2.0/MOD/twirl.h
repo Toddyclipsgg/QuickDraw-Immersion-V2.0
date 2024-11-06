@@ -9,8 +9,6 @@ inline std::unordered_map<int, const char*> weapon_twirl_variation_names = {
     {5, "FIGURE_EIGHT_TOSS"},
 };
 
-static int selected_single_variation;
-
 void toggleTwirl();
 void startWeaponCheck();
 void checkWeaponDrawnSync();

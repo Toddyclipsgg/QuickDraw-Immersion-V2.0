@@ -27,8 +27,10 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
     int processedEntities = 0;
     Player playerPed = PLAYER::PLAYER_PED_ID();
 
+    // Verifica se o jogador existe
     if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return false;
 
+    // Se a opção deleteOnPlayerDeath estiver ativada e o jogador estiver morto, exclui as entidades
     if (deleteOnPlayerDeath && ENTITY::IS_ENTITY_DEAD(playerPed)) {
         return DeleteEntities(entities, BATCH_SIZE);
     }
@@ -36,7 +38,9 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
     Vector3 playerCoords = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
     static std::unordered_map<Entity, int> pedStopTimes;
 
+    // Itera sobre as entidades
     for (auto it = entities.begin(); it != entities.end();) {
+        // Se a entidade não existir, remove do vetor
         if (!ENTITY::DOES_ENTITY_EXIST(*it)) {
             it = entities.erase(it);
             continue;
@@ -45,6 +49,7 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
         Vector3 entityCoords = ENTITY::GET_ENTITY_COORDS(*it, true, false);
         float distance = CalculateDistance(playerCoords, entityCoords);
 
+        // Se a entidade estiver fora do alcance ou morta, marca como não necessária e remove do vetor
         if (distance > maxDistance * maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
             ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&(*it));
             DeleteVehiclesAndHorsesDead(vehicleEntityList, 250.0f);
@@ -53,6 +58,7 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
             continue;
         }
 
+        // Se a entidade atender às condições para exclusão, remove do vetor
         if (ShouldDeleteEntity(*it, playerPed, pedStopTimes)) {
             it = entities.erase(it);
             continue;
@@ -61,6 +67,7 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
         ++it;
         processedEntities++;
 
+        // Limita o número de entidades processadas por iteração
         if (processedEntities >= BATCH_SIZE) {
             break;
         }
@@ -68,21 +75,28 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
     return true;
 }
 
+// Função para verificar se uma entidade deve ser excluída com base em várias condições
 bool ShouldDeleteEntity(Entity entity, Player playerPed, std::unordered_map<Entity, int>& pedStopTimes) {
+    // Verifica se a entidade está parada e não possui obstáculos, interações ou status de combate
     if ((PED::IS_PED_STOPPED(entity) || VEHICLE::IS_VEHICLE_STOPPED(entity)) &&
         !CheckEntityObstacles(entity) &&
         !HandleEntityInteractions(entity, playerPed) &&
         !HandleCombatStatus(entity, playerPed)) {
 
+        // Se a entidade não estiver no mapa de tempos de parada, adiciona com o tempo atual
         if (pedStopTimes.find(entity) == pedStopTimes.end()) {
             pedStopTimes[entity] = BUILTIN::TIMERA();
-        } else if (BUILTIN::TIMERA() - pedStopTimes[entity] > 11000) {
+        } 
+        // Se a entidade estiver parada por mais de 11 segundos, exclui a entidade
+        else if (BUILTIN::TIMERA() - pedStopTimes[entity] > 11000) {
             ENTITY::DELETE_ENTITY(&entity);
             DeleteVehiclesAndHorses(vehicleEntityList, 250.0f, true);
             pedStopTimes.erase(entity);
             return true;
         }
-    } else {
+    } 
+    // Se a entidade não estiver parada, remove do mapa de tempos de parada
+    else {
         pedStopTimes.erase(entity);
     }
     return false;
@@ -90,39 +104,50 @@ bool ShouldDeleteEntity(Entity entity, Player playerPed, std::unordered_map<Enti
 
 // Função para verificar obstáculos ao redor da entidade
 bool CheckEntityObstacles(Entity ped) {
+    // Verifica se a entidade existe
     if (!ENTITY::DOES_ENTITY_EXIST(ped)) return false;
 
     int vehicles[256];
+    // Obtém todos os veículos no mundo
     int totalVehicles = worldGetAllVehicles(vehicles, 256);
     Entity pedVehicle = PED::GET_VEHICLE_PED_IS_IN(ped, false);
     Entity pedMount = PED::GET_MOUNT(ped);
 
+    // Itera sobre todos os veículos para verificar se há obstáculos na frente da entidade
     for (int i = 0; i < totalVehicles; ++i) {
         if (vehicles[i] != pedVehicle && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, vehicles[i], true)) {
             return true;
         }
     }
+    // Verifica se há obstáculos na frente da montaria da entidade
     return pedMount && ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(ped, pedMount, true);
 }
 
 // Função para checar interações entre ped e jogador
 bool HandleEntityInteractions(Entity ped, Player player) {
+    // Verifica se a entidade ped ou o jogador existem
     if (!ENTITY::DOES_ENTITY_EXIST(ped) || !ENTITY::DOES_ENTITY_EXIST(player)) return false;
 
+    // Verifica se o ped está montado em um cavalo
     if (PED::IS_PED_ON_MOUNT(ped)) {
         Ped rider = PED::GET_MOUNT(ped);
+        // Verifica se o cavalo existe e tem linha de visão clara para o jogador
         if (ENTITY::DOES_ENTITY_EXIST(rider) &&
             ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(rider, player, true) &&
+            // Verifica se o cavalo está respondendo a interações positivas ou negativas do jogador
             (PED::GET_IS_PED_RESPONDING_TO_POSITIVE_INTERACTION(rider, player) ||
                 PED::GET_IS_PED_RESPONDING_TO_NEGATIVE_INTERACTION(rider, player))) {
             return true;
         }
     }
 
+    // Verifica as interações para os assentos do veículo
     for (int seatIndex = -1; seatIndex >= -2; --seatIndex) {
         Ped pedInSeat = VEHICLE::GET_PED_IN_VEHICLE_SEAT(ped, seatIndex);
+        // Verifica se o ped no assento existe, não é o jogador e tem linha de visão clara para o jogador
         if (ENTITY::DOES_ENTITY_EXIST(pedInSeat) && pedInSeat != player &&
             ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_IN_FRONT(pedInSeat, player, true) &&
+            // Verifica se o ped no assento está respondendo a interações positivas ou negativas do jogador
             (PED::GET_IS_PED_RESPONDING_TO_POSITIVE_INTERACTION(pedInSeat, player) ||
                 PED::GET_IS_PED_RESPONDING_TO_NEGATIVE_INTERACTION(pedInSeat, player))) {
             return true;
@@ -140,22 +165,28 @@ bool HandleCombatStatus(Entity ped, Player player) {
 
 // Função para excluir veículos e cavalos com base em condições específicas
 bool DeleteVehiclesAndHorses(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath) {
+    // Define o tamanho do lote para processamento
     constexpr int BATCH_SIZE = 2;
     int processedEntities = 0;
     Player playerPed = PLAYER::PLAYER_PED_ID();
 
+    // Verifica se o jogador existe
     if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return false;
 
+    // Se a opção deleteOnPlayerDeath estiver ativada e o jogador estiver morto, exclui as entidades
     if (deleteOnPlayerDeath && ENTITY::IS_ENTITY_DEAD(playerPed)) {
         return DeleteEntities(entities, BATCH_SIZE);
     }
 
+    // Itera sobre as entidades
     for (auto it = entities.begin(); it != entities.end();) {
+        // Se a entidade não existir, remove do vetor
         if (!ENTITY::DOES_ENTITY_EXIST(*it)) {
             it = entities.erase(it);
             continue;
         }
 
+        // Se a entidade atender às condições para exclusão, remove do vetor
         if (ShouldDeleteVehicleOrHorse(*it)) {
             it = entities.erase(it);
             continue;
@@ -164,6 +195,7 @@ bool DeleteVehiclesAndHorses(std::vector<Entity>& entities, float maxDistance, b
         ++it;
         processedEntities++;
 
+        // Limita o número de entidades processadas por iteração
         if (processedEntities >= BATCH_SIZE) {
             break;
         }
@@ -171,9 +203,13 @@ bool DeleteVehiclesAndHorses(std::vector<Entity>& entities, float maxDistance, b
     return true;
 }
 
+// Função para verificar se um veículo ou cavalo deve ser excluído com base em condições específicas
 bool ShouldDeleteVehicleOrHorse(Entity entity) {
+    // Verifica se o veículo está parado ou se o assento da montaria está livre
     if (VEHICLE::IS_VEHICLE_STOPPED(entity) || PED::_IS_MOUNT_SEAT_FREE(entity, -1) || 
+        // Verifica se os assentos do veículo estão livres
         (VEHICLE::IS_VEHICLE_SEAT_FREE(entity, -1) && VEHICLE::IS_VEHICLE_SEAT_FREE(entity, -2))) {
+        // Exclui a entidade
         ENTITY::DELETE_ENTITY(&entity);
         return true;
     }
@@ -186,11 +222,14 @@ void DeleteVehiclesAndHorsesDead(std::vector<Entity>& entities, float maxDistanc
     int processedEntities = 0;
     Player playerPed = PLAYER::PLAYER_PED_ID();
 
+    // Verifica se o jogador existe
     if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return;
 
     Vector3 playerCoords = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
 
+    // Itera sobre as entidades
     for (auto it = entities.begin(); it != entities.end();) {
+        // Se a entidade não existir, remove do vetor
         if (!ENTITY::DOES_ENTITY_EXIST(*it)) {
             it = entities.erase(it);
             continue;
@@ -198,6 +237,7 @@ void DeleteVehiclesAndHorsesDead(std::vector<Entity>& entities, float maxDistanc
 
         float distance = CalculateDistance(playerCoords, ENTITY::GET_ENTITY_COORDS(*it, true, false));
 
+        // Se a entidade estiver fora do alcance ou morta, marca como não necessária e remove do vetor
         if (distance > maxDistance * maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
             ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&(*it));
             it = entities.erase(it);
@@ -207,21 +247,28 @@ void DeleteVehiclesAndHorsesDead(std::vector<Entity>& entities, float maxDistanc
         ++it;
         processedEntities++;
 
+        // Limita o número de entidades processadas por iteração
         if (processedEntities >= BATCH_SIZE) {
             break;
         }
     }
 }
 
+// Função para excluir entidades em lotes
 bool DeleteEntities(std::vector<Entity>& entities, int batchSize) {
     int processedEntities = 0;
     for (auto it = entities.begin(); it != entities.end();) {
+        // Verifica se a entidade existe
         if (ENTITY::DOES_ENTITY_EXIST(*it)) {
+            // Exclui a entidade
             ENTITY::DELETE_ENTITY(&(*it));
         }
+        // Remove a entidade do vetor
         it = entities.erase(it);
         processedEntities++;
+        // Limita o número de entidades processadas por iteração
         if (processedEntities >= batchSize) break;
     }
+    // Retorna verdadeiro se todas as entidades foram excluídas
     return entities.empty();
 }
