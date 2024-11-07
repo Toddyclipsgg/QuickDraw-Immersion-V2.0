@@ -5,65 +5,58 @@
 std::vector<Entity> globalEntityList;
 std::vector<Entity> vehicleEntityList;
 
-#pragma warning(disable:4326)
-// Função principal chamada a cada frame
-void main() {
+// FunÃ§Ã£o principal chamada a cada frame
+void MainLoop() {
     startLogThread();
 
     while (true) {
-
         spawnGroupManager();
         WAIT(0);
     }
 }
-#pragma warning(default:4326)
 
-// Função da thread adicional
-void ScriptMain2() {
+// FunÃ§Ã£o da thread adicional
+void AdditionalThread1() {
     BUILTIN::SET_THIS_THREAD_PRIORITY(0);
     Ped player = PLAYER::PLAYER_PED_ID();
     printStartMod();
 
     while (true) {
-
         if (IsKeyJustUp(0x34)) {
             OdriscollsVehicleSpawn();
         }
 
 #if DEBUG_COORD
         DisplayPlayerCoordinatesPanel();
-#endif // DEBUG_COORD
+#endif
 
         startmenu();
         checkKeyPress();
         handleTabKey();
         removeAimAssist(player);
         setAccuracyTo100(player);
-        WAIT(0); // Espera 1 segundo entre cada chamada para não sobrecarregar a execução
+        WAIT(0);
     }
 }
 
-// Função da thread adicional
-void ScriptMain3() {
-
+// FunÃ§Ã£o da thread adicional
+void AdditionalThread2() {
     while (true) {
-
-        DeleteEntitiesOnCondition(globalEntityList, 100.0f, true); // Chama a função de deletar entidades
-        WAIT(0); // Espera 1 segundo entre cada chamada para não sobrecarregar a execução
+        DeleteEntitiesOnCondition(globalEntityList, 100.0f, true);
+        WAIT(0);
     }
 }
 
-#pragma warning(disable:4996)
-// Função de entrada do script
+// FunÃ§Ã£o de entrada do script
 void ScriptMain() {
     srand(GetTickCount());
 
 #if INJECTION_CONSOLE_ENABLE
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
-#endif // INJECTION_CONSOLE_ENABLE
+#endif
+
     initLog();
-    main();
+    MainLoop();
     closeLog();
 }
-#pragma warning(default:4996)

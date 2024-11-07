@@ -7,7 +7,7 @@ Hash joaat(const char* string)
 }
 
 // Função para calcular distância 3D entre duas coordenadas
-float CalculateDistance(const Vector3& pos1, const Vector3& pos2) {
+float CalculateDistance1(const Vector3& pos1, const Vector3& pos2) {
     return BUILTIN::VDIST(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
 }
 
@@ -47,7 +47,7 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
         }
 
         Vector3 entityCoords = ENTITY::GET_ENTITY_COORDS(*it, true, false);
-        float distance = CalculateDistance(playerCoords, entityCoords);
+        float distance = CalculateDistance1(playerCoords, entityCoords);
 
         // Se a entidade estiver fora do alcance ou morta, marca como não necessária e remove do vetor
         if (distance > maxDistance * maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
@@ -235,10 +235,10 @@ void DeleteVehiclesAndHorsesDead(std::vector<Entity>& entities, float maxDistanc
             continue;
         }
 
-        float distance = CalculateDistance(playerCoords, ENTITY::GET_ENTITY_COORDS(*it, true, false));
+        float distance1 = CalculateDistance1(playerCoords, ENTITY::GET_ENTITY_COORDS(*it, true, false));
 
         // Se a entidade estiver fora do alcance ou morta, marca como não necessária e remove do vetor
-        if (distance > maxDistance * maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
+        if (distance1 > maxDistance * maxDistance || ENTITY::IS_ENTITY_DEAD(*it)) {
             ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&(*it));
             it = entities.erase(it);
             continue;

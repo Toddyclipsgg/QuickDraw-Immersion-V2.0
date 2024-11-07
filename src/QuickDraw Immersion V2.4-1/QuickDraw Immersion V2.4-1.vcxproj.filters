@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Arquivos de Origem">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Arquivos de Recurso">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="blip">
+      <UniqueIdentifier>{1b6b5c42-835e-4e50-bde6-0a8e6317718f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="creatorped">
+      <UniqueIdentifier>{f37b7f96-edb3-4f67-8075-917e871d76e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="creatorvehicle">
+      <UniqueIdentifier>{bc9160d2-d316-4ff5-ba23-151a71bfa815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gangspawn">
+      <UniqueIdentifier>{89938d24-e787-4ee2-be72-b663acb23248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gangspawn\spawngroupmanager">
+      <UniqueIdentifier>{64a68944-5194-4320-892d-3f2d35edcba7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hashrandom">
+      <UniqueIdentifier>{2c60dd61-9a93-4e22-acf4-1f6fd1544b8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="spawnped">
+      <UniqueIdentifier>{9c5e9f69-8652-4caa-b49e-9d4801e3353d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\BLIP\blips.h">
+      <Filter>blip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\CREATORPED\creatorped.h">
+      <Filter>creatorped</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\CREATORPED\setpresetped.h">
+      <Filter>creatorped</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\CREATORVEHICLE\spawnvehicle.h">
+      <Filter>creatorvehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\GANG\lemoynespawn.h">
+      <Filter>gangspawn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\GANG\odriscollsspawn.h">
+      <Filter>gangspawn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\GANG\skinnerspawn.h">
+      <Filter>gangspawn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\GANG\spawngroupmanager.h">
+      <Filter>gangspawn\spawngroupmanager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\HASHRANDOM\hashrandom.h">
+      <Filter>hashrandom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\QuickDraw Immersion V2.0\SPAWNPED\spawnped.h">
+      <Filter>spawnped</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\BLIP\blips.cpp">
+      <Filter>blip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\CREATORPED\creatorped.cpp">
+      <Filter>creatorped</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\CREATORPED\setpresetped.cpp">
+      <Filter>creatorped</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\CREATORVEHICLE\spawnvehicle.cpp">
+      <Filter>creatorvehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\GANG\lemoynespawn.cpp">
+      <Filter>gangspawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\GANG\odriscollsspawn.cpp">
+      <Filter>gangspawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\GANG\skinnerspawn.cpp">
+      <Filter>gangspawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\GANG\spawngroupmanager.cpp">
+      <Filter>gangspawn\spawngroupmanager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\HASHRANDOM\hashrandom.cpp">
+      <Filter>hashrandom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\QuickDraw Immersion V2.0\SPAWNPED\spawnped.cpp">
+      <Filter>spawnped</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

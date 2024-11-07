@@ -1,4 +1,7 @@
 #pragma once
+
+#ifndef HEADER_H
+#define HEADER_H
 // Natives
 #include "..\..\inc\types.h"
 #include "..\..\inc\enums.h"
@@ -57,3 +60,5 @@ extern std::map<Ped, Blip> pedBlips;
 #include "MOD\twirl.h"
 #include "BLIP\blips.h"
 #include "CREATORVEHICLE\spawnvehicle.h"
+
+#endif // HEADER_H

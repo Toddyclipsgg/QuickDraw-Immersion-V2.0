@@ -4,8 +4,8 @@
 #include <unordered_map>
 
 Hash joaat(const char* string);
-float CalculateDistance(const Vector3& pos1, const Vector3& pos2);
 float DistanceBetweenEntitiesHor(Entity entity1, Entity entity2);
+float CalculateDistance1(const Vector3& pos1, const Vector3& pos2);
 bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance, bool deleteOnPlayerDeath);
 bool ShouldDeleteEntity(Entity entity, Player playerPed, std::unordered_map<Entity, int>& pedStopTimes);
 bool CheckEntityObstacles(Entity ped);

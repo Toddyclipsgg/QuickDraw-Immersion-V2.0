@@ -5,16 +5,6 @@
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="script.cpp" />
-    <ClCompile Include="CREATORPED\creatorped.cpp">
-      <Filter>creatorped</Filter>
-    </ClCompile>
-    <ClCompile Include="SPAWNPED\spawnped.cpp">
-      <Filter>spawnped</Filter>
-    </ClCompile>
-    <ClCompile Include="HASHRANDOM\hashrandom.cpp">
-      <Filter>hashrandom</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.cpp" />
     <ClCompile Include="MOD\quickdraw.cpp">
       <Filter>mod</Filter>
     </ClCompile>
@@ -24,29 +14,39 @@
     <ClCompile Include="MOD\twirl.cpp">
       <Filter>mod</Filter>
     </ClCompile>
-    <ClCompile Include="GANG\odriscollsspawn.cpp">
-      <Filter>gangspawn</Filter>
+    <ClCompile Include="MENU\menu.cpp">
+      <Filter>menu</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="BLIP\blips.cpp">
+      <Filter>blip</Filter>
+    </ClCompile>
+    <ClCompile Include="CREATORPED\creatorped.cpp">
+      <Filter>creatorped</Filter>
     </ClCompile>
     <ClCompile Include="CREATORPED\setpresetped.cpp">
       <Filter>creatorped</Filter>
     </ClCompile>
-    <ClCompile Include="MENU\menu.cpp">
-      <Filter>menu</Filter>
-    </ClCompile>
-    <ClCompile Include="BLIP\blips.cpp">
-      <Filter>blip</Filter>
+    <ClCompile Include="CREATORVEHICLE\spawnvehicle.cpp">
+      <Filter>creatorvehicle</Filter>
     </ClCompile>
     <ClCompile Include="GANG\lemoynespawn.cpp">
+      <Filter>gangspawn</Filter>
+    </ClCompile>
+    <ClCompile Include="GANG\odriscollsspawn.cpp">
+      <Filter>gangspawn</Filter>
+    </ClCompile>
+    <ClCompile Include="GANG\skinnerspawn.cpp">
       <Filter>gangspawn</Filter>
     </ClCompile>
     <ClCompile Include="GANG\spawngroupmanager.cpp">
       <Filter>gangspawn\spawngroupmanager</Filter>
     </ClCompile>
-    <ClCompile Include="GANG\skinnerspawn.cpp">
-      <Filter>gangspawn</Filter>
+    <ClCompile Include="HASHRANDOM\hashrandom.cpp">
+      <Filter>hashrandom</Filter>
     </ClCompile>
-    <ClCompile Include="CREATORVEHICLE\spawnvehicle.cpp">
-      <Filter>creatorvehicle</Filter>
+    <ClCompile Include="SPAWNPED\spawnped.cpp">
+      <Filter>spawnped</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,19 +65,9 @@
     </ClInclude>
     <ClInclude Include="logger.h" />
     <ClInclude Include="script.h" />
-    <ClInclude Include="CREATORPED\creatorped.h">
-      <Filter>creatorped</Filter>
-    </ClInclude>
-    <ClInclude Include="SPAWNPED\spawnped.h">
-      <Filter>spawnped</Filter>
-    </ClInclude>
-    <ClInclude Include="HASHRANDOM\hashrandom.h">
-      <Filter>hashrandom</Filter>
-    </ClInclude>
     <ClInclude Include="header.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h" />
     <ClInclude Include="MOD\quickdraw.h">
       <Filter>mod</Filter>
     </ClInclude>
@@ -87,46 +77,47 @@
     <ClInclude Include="MOD\twirl.h">
       <Filter>mod</Filter>
     </ClInclude>
-    <ClInclude Include="GANG\odriscollsspawn.h">
-      <Filter>gangspawn</Filter>
+    <ClInclude Include="MENU\gamefunctions.h">
+      <Filter>menu</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="BLIP\blips.h">
+      <Filter>blip</Filter>
+    </ClInclude>
+    <ClInclude Include="CREATORPED\creatorped.h">
+      <Filter>creatorped</Filter>
     </ClInclude>
     <ClInclude Include="CREATORPED\setpresetped.h">
       <Filter>creatorped</Filter>
     </ClInclude>
-    <ClInclude Include="MENU\gamefunctions.h">
-      <Filter>menu</Filter>
-    </ClInclude>
-    <ClInclude Include="MENU\menuconstructor.h">
-      <Filter>menu</Filter>
-    </ClInclude>
-    <ClInclude Include="BLIP\blips.h">
-      <Filter>blip</Filter>
+    <ClInclude Include="CREATORVEHICLE\spawnvehicle.h">
+      <Filter>creatorvehicle</Filter>
     </ClInclude>
     <ClInclude Include="GANG\lemoynespawn.h">
+      <Filter>gangspawn</Filter>
+    </ClInclude>
+    <ClInclude Include="GANG\odriscollsspawn.h">
+      <Filter>gangspawn</Filter>
+    </ClInclude>
+    <ClInclude Include="GANG\skinnerspawn.h">
       <Filter>gangspawn</Filter>
     </ClInclude>
     <ClInclude Include="GANG\spawngroupmanager.h">
       <Filter>gangspawn\spawngroupmanager</Filter>
     </ClInclude>
-    <ClInclude Include="GANG\skinnerspawn.h">
-      <Filter>gangspawn</Filter>
+    <ClInclude Include="HASHRANDOM\hashrandom.h">
+      <Filter>hashrandom</Filter>
     </ClInclude>
-    <ClInclude Include="CREATORVEHICLE\spawnvehicle.h">
-      <Filter>creatorvehicle</Filter>
+    <ClInclude Include="SPAWNPED\spawnped.h">
+      <Filter>spawnped</Filter>
+    </ClInclude>
+    <ClInclude Include="MENU\menuconstructor.h">
+      <Filter>menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
       <UniqueIdentifier>{fe82bd4a-2d14-486a-8be5-8bf6b50a2414}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="creatorped">
-      <UniqueIdentifier>{03bf8032-58ea-4405-82db-ddc49b5bdce6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="spawnped">
-      <UniqueIdentifier>{05bce188-2bcf-407b-8dc1-96d73406e78d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="hashrandom">
-      <UniqueIdentifier>{a03f285b-5d05-4101-af28-3b37d788d784}</UniqueIdentifier>
     </Filter>
     <Filter Include="mod">
       <UniqueIdentifier>{c6f191bc-df99-41ad-8f5f-153bbbf23762}</UniqueIdentifier>
@@ -135,16 +126,25 @@
       <UniqueIdentifier>{6f1ac5d4-3238-4b1d-aba4-7bb7c0d241bf}</UniqueIdentifier>
     </Filter>
     <Filter Include="blip">
-      <UniqueIdentifier>{2a3044d0-e421-4e4c-88a9-882ce3e6e0d4}</UniqueIdentifier>
+      <UniqueIdentifier>{370188d4-a240-46ac-a932-005cddaff30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="creatorped">
+      <UniqueIdentifier>{d6e94247-3041-4ed6-86c0-40182b4314a8}</UniqueIdentifier>
     </Filter>
     <Filter Include="creatorvehicle">
-      <UniqueIdentifier>{5a80d11a-c897-442c-b692-070d29e02e6f}</UniqueIdentifier>
+      <UniqueIdentifier>{be7a74bb-2eb7-4581-8945-6dbaea305580}</UniqueIdentifier>
     </Filter>
     <Filter Include="gangspawn">
-      <UniqueIdentifier>{2ed5c940-862e-4881-bbf8-48bdeaf6bcf5}</UniqueIdentifier>
+      <UniqueIdentifier>{9afc68b0-41b0-4acb-b9ff-b26b50a9cabd}</UniqueIdentifier>
     </Filter>
     <Filter Include="gangspawn\spawngroupmanager">
-      <UniqueIdentifier>{7d4cd143-6a5c-449d-8918-b888d2f1c1fd}</UniqueIdentifier>
+      <UniqueIdentifier>{3fbc1a67-c10e-494e-8136-20d88185c40a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hashrandom">
+      <UniqueIdentifier>{bdfe9258-2147-4031-ae89-059517890b31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="spawnped">
+      <UniqueIdentifier>{4582470e-83c8-4dfe-9c9b-0d7b3703bd73}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

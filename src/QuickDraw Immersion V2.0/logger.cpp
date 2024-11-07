@@ -1,6 +1,6 @@
 #include "header.h"
 
-// Declaração de variáveis globais para log e console
+// Declaraï¿½ï¿½o de variï¿½veis globais para log e console
 std::ofstream logFile;
 bool isLoggingEnabled = true;
 bool isConsoleEnabled = true; // Ative/Desative tambem a INJECTION_CONSOLE_ENABLE em (logger.h)
@@ -27,15 +27,15 @@ void closeLog() {
     }
 }
 
-// Função para logar informações no arquivo
+// Funï¿½ï¿½o para logar informaï¿½ï¿½es no arquivo
 void logToFile(const std::string& message) {
-    std::lock_guard<std::mutex> guard(logMutex); // Garante que as threads não colidam
+    std::lock_guard<std::mutex> guard(logMutex); // Garante que as threads nï¿½o colidam
     if (isLoggingEnabled && logFile.is_open()) {
         logFile << message << std::endl;
     }
 }
 
-// Função para exibir no console
+// Funï¿½ï¿½o para exibir no console
 void logToConsole(const std::string& message) {
 #if CONSOLE_ENABLED
     if (isConsoleEnabled) {
@@ -44,7 +44,7 @@ void logToConsole(const std::string& message) {
 #endif
 }
 
-// Função para controlar o log e console
+// Funï¿½ï¿½o para controlar o log e console
 void logMessage(const std::string& message) {
     auto now = std::chrono::steady_clock::now();
     if (now - lastLogTime >= logInterval) {
@@ -54,7 +54,7 @@ void logMessage(const std::string& message) {
     }
 }
 
-// Função para logar imediatamente
+// Funï¿½ï¿½o para logar imediatamente
 void logImmediate(const std::string& message) {
     logToConsole(message);  // Exibe no console
     logToFile(message);     // Escreve no arquivo
@@ -73,18 +73,18 @@ void keyboardHandler() {
     }
 }
 
-// Função para rodar o logger em uma thread separada
+// Funï¿½ï¿½o para rodar o logger em uma thread separada
 void startLogThread() {
     logThread = std::thread([]() {
         while (true) {
             std::this_thread::sleep_for(std::chrono::seconds(1)); // Verifica a cada segundo
             if (!isLoggingEnabled) break; // Para a thread se o logging estiver desativado
-            // Aqui você pode adicionar outras operações a serem feitas periodicamente
+            // Aqui vocï¿½ pode adicionar outras operaï¿½ï¿½es a serem feitas periodicamente
         }
         });
 }
 
-// Função para parar a thread de log
+// Funï¿½ï¿½o para parar a thread de log
 void stopLogThread() {
     if (logThread.joinable()) {
         isLoggingEnabled = false; // Sinaliza para parar a thread

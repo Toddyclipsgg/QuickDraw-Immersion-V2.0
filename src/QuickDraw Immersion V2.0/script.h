@@ -15,6 +15,6 @@ void DisplayPlayerCoordinatesPanel();
 void printStartMod();
 void AdjustTime();
 void startmenu();
-void ScriptMain3();
-void ScriptMain2();
+void AdditionalThread1();
+void AdditionalThread2();
 void ScriptMain();

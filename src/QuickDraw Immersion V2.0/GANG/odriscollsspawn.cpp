@@ -1,6 +1,7 @@
 #include "..\header.h"
 
-std::vector<std::string> availableOdriscollList = odriscoll;  // Lista de Peds disponíveis para gerar
+// Lista de Peds disponíveis para gerar
+std::vector<std::string> availableOdriscollList = odriscoll;
 std::vector<std::string> usedOdriscollList;  // Lista de Peds já utilizados
 
 // Função auxiliar para normalizar um vetor
@@ -17,7 +18,7 @@ Vector3 NormalizeVector(Vector3 vec)
 }
 
 // Função para calcular a distância entre dois pontos
-float distanceBetween1(Vector3 A, Vector3 B) {
+float CalculateDistance(Vector3 A, Vector3 B) {
     return MISC::GET_DISTANCE_BETWEEN_COORDS(A.x, A.y, A.z, B.x, B.y, B.z, 1);
 }
 
@@ -45,15 +46,13 @@ void createOdriscollGroup(Ped ped1, Ped ped2, bool isVehicleGroup) {
 
 // Função para gerar um Ped aleatório da lista e remover o modelo após o uso
 std::string GetRandomOdriscollHash() {
-    std::srand(static_cast<unsigned int>(std::time(0)));
-
     if (availableOdriscollList.empty()) {
         logMessage("All O'Driscolls used, resetting the list.");
         availableOdriscollList = odriscoll;
         usedOdriscollList.clear();
     }
 
-    int randomIndex = std::rand() % availableOdriscollList.size();
+    int randomIndex = rand() % availableOdriscollList.size();
     std::string selectedOdriscollHash = availableOdriscollList[randomIndex];
 
     logMessage("O'Driscoll selected: " + selectedOdriscollHash);
@@ -67,16 +66,62 @@ std::string GetRandomOdriscollHash() {
     return selectedOdriscollHash;
 }
 
+// Função para verificar se o spawn é permitido
+bool IsSpawnAllowed(double maxDistance) {
+    if (MISC::GET_MISSION_FLAG() || isPlayerWithinDistance(maxDistance)) {
+        logMessage("Player is within range of a camp or on a mission.");
+        return false;
+    }
+    return true;
+}
+
+// Função para encontrar um destino válido
+bool FindValidDestination(Vector3 origin, float minDistance, float maxDistance, Vector3& outDestination) {
+    int maxAttempts = 25;
+    for (int i = 0; i < maxAttempts; ++i) {
+        WAIT(100);
+        auto destino = GetRandomCoord();
+        Vector3 destination = destino.second; // Certifique-se de que destino.second seja do tipo Vector3
+        float distance = CalculateDistance(origin, destination);
+        logMessage("Attempt " + std::to_string(i) + ": Checking distance for generated coordinate.");
+        if (distance >= minDistance && distance <= maxDistance) {
+            logMessage("Coordinate found within valid range.");
+            outDestination = destino.second;
+            return true;
+        }
+    }
+    return false;
+}
+
+// Função para mover o ped até o destino
+void MoveGroupToDestination(Ped leader, Ped follower, Vector3 destination) {
+    if (PATHFIND::IS_POINT_ON_ROAD(destination.x, destination.y, destination.z, leader)) {
+        logMessage("Point is navigable, moving group.");
+
+        TASK::TASK_MOVE_FOLLOW_ROAD_USING_NAVMESH(leader, 1.250f, destination.x, destination.y, destination.z, 0);
+        ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(leader, true);
+
+        float safeDistance = 2.0f;
+
+        if (!ENTITY::IS_ENTITY_DEAD(follower)) {
+            TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(follower, leader, 0.0f, -safeDistance, 0.0f, 1.250f, -1, 0.500f, true, false, false, false, false, false);
+            ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(follower, true);
+        }
+    } else {
+        logMessage("NavMesh path query failed. Deleting entities and restarting.");
+        ENTITY::DELETE_ENTITY(&leader);
+        ENTITY::DELETE_ENTITY(&follower);
+        // Handle deletion of other entities if necessary
+    }
+}
+
 // Função para gerar e configurar um grupo de O'Driscolls montados
 void OdriscollsMountSpawn() {
-    double maxDistance = 500.0;
-
-    if (MISC::GET_MISSION_FLAG() || isPlayerWithinDistance(maxDistance)) {
-        logMessage("Player is within 100 meters of a camp or on a mission.");
+    const double maxDistance = 500.0;
+    if (!IsSpawnAllowed(maxDistance)) {
         return;
     }
 
-    Player player = PLAYER::PLAYER_ID();
     Ped playerPed = PLAYER::PLAYER_PED_ID();
     Vector3 playerPos = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
     logMessage("Player coordinates captured.");
@@ -91,15 +136,15 @@ void OdriscollsMountSpawn() {
     std::string randomOdriscoll2 = GetRandomOdriscollHash();
     Hash odriscollHash2 = MISC::GET_HASH_KEY(randomOdriscoll2.c_str());
 
-    Ped horse1 = createPed(horseHash1, getRandomPedPositionInRange(playerPos, 80));
-    Ped horse2 = createPed(horseHash2, getRandomPedPositionInRange(playerPos, 80));
+    Ped horse1 = QuickDrawImmersion::createPed(horseHash1, getRandomPedPositionInRange(playerPos, 80));
+    Ped horse2 = QuickDrawImmersion::createPed(horseHash2, getRandomPedPositionInRange(playerPos, 80));
     logMessage("Horses created.");
 
-    giveComboSaddleToHorse(horse1);
-    giveComboSaddleToHorse(horse2);
+    QuickDrawImmersion::giveComboSaddleToHorse(horse1);
+    QuickDrawImmersion::giveComboSaddleToHorse(horse2);
 
-    Ped ped1 = pedMount(odriscollHash1, horse1, true, playerPos, 80);
-    Ped ped2 = pedMount(odriscollHash2, horse2, true, playerPos, 80);
+    Ped ped1 = QuickDrawImmersion::pedMount(odriscollHash1, horse1, true, playerPos, 80);
+    Ped ped2 = QuickDrawImmersion::pedMount(odriscollHash2, horse2, true, playerPos, 80);
     logMessage("Peds mounted on horses.");
     WAIT(4500);
 
@@ -117,65 +162,20 @@ void OdriscollsMountSpawn() {
         Vector3 ped1Coords = ENTITY::GET_ENTITY_COORDS(ped1, true, false);
         logMessage("Ped 1 coordinates captured.");
 
-        float distanciaMaxima = 1500.0f;
-        float distanciaMinima = 500.0f;
-        float distancia = 0.0f;
-        int tentativasMax = 25;
-        int tentativaAtual = 0;
-        std::pair<std::string, Vector3> destino;
+        Vector3 destination;
+        const float distanciaMaxima = 1500.0f;
+        const float distanciaMinima = 500.0f;
 
-        while (tentativaAtual < tentativasMax) {
-            WAIT(100);
-            destino = GetRandomCoord();
-            distancia = CalculateDistance(ped1Coords, destino.second);
-            logMessage("Attempt " + std::to_string(tentativaAtual) + ": Checking distance for generated coordinate.");
-            if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
-                logMessage("Coordinate found within valid range.");
-                break;
-            }
-            tentativaAtual++;
-        }
-
-        if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
-            float x = destino.second.x;
-            float y = destino.second.y;
-            float z = destino.second.z;
-
-            if (PATHFIND::IS_POINT_ON_ROAD(x, y, z, ped1)) {
-                logMessage("Point is navigable, moving Ped 1.");
-
-                TASK::TASK_MOVE_FOLLOW_ROAD_USING_NAVMESH(ped1, 1.250f, x, y, z, 0);
-                ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped1, true);
-
-                float safeDistance = 2.0f;
-                float minDistance = 1.5f;
-
-                Vector3 ped1Position = ENTITY::GET_ENTITY_COORDS(ped1, true, false);
-                Vector3 ped2Position = ENTITY::GET_ENTITY_COORDS(ped2, true, false);
-
-                float distance = CalculateDistance(ped1Position, ped2Position);
-                logMessage("Ped 1 and Ped 2 distance calculated.");
-
-                if (distance > minDistance) {
-                    logMessage("Ped 2 following Ped 1.");
-                    if (!ENTITY::IS_ENTITY_DEAD(ped2)) {
-                        TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped2, ped1, 0.0f, -safeDistance, 0.0f, 1.250f, -1, 0.500f, true, false, false, false, false, false);
-                        ENTITY::SET_ENTITY_LOAD_COLLISION_FLAG(ped2, true);
-                    }
-                } else {
-                    logMessage("Ped 2 is too close to Ped 1, standing still to adjust.");
-                    TASK::TASK_STAND_STILL(ped2, 500);
-                }
-            } else {
-                logMessage("NavMesh path query failed for ped1. Deleting entities and restarting.");
-
-                ENTITY::DELETE_ENTITY(&ped1);
-                ENTITY::DELETE_ENTITY(&ped2);
-                ENTITY::DELETE_ENTITY(&horse1);
-                ENTITY::DELETE_ENTITY(&horse2);
-                WAIT(2000);
-                OdriscollsMountSpawn();
-            }
+        if (FindValidDestination(ped1Coords, distanciaMinima, distanciaMaxima, destination)) {
+            MoveGroupToDestination(ped1, ped2, destination);
+        } else {
+            logMessage("No valid destination found. Deleting entities and restarting.");
+            ENTITY::DELETE_ENTITY(&ped1);
+            ENTITY::DELETE_ENTITY(&ped2);
+            ENTITY::DELETE_ENTITY(&horse1);
+            ENTITY::DELETE_ENTITY(&horse2);
+            OdriscollsMountSpawn();
+            return;
         }
     }
 
@@ -187,20 +187,17 @@ void OdriscollsMountSpawn() {
 
 // Função para gerar e configurar um grupo de O'Driscolls em um veículo
 void OdriscollsVehicleSpawn() {
-    double maxDistance = 500.0;
-
-    if (MISC::GET_MISSION_FLAG() || isPlayerWithinDistance(maxDistance)) {
-        logMessage("Player is within 100 meters of a camp or on a mission.");
+    const double maxDistance = 500.0;
+    if (!IsSpawnAllowed(maxDistance)) {
         return;
     }
 
-    Player player = PLAYER::PLAYER_ID();
     Ped playerPed = PLAYER::PLAYER_PED_ID();
     Vector3 playerPos = ENTITY::GET_ENTITY_COORDS(playerPed, true, false);
     logMessage("Player coordinates captured.");
 
-    float distance = 60.0f;
-    Vector3 spawnPos = { playerPos.x + distance, playerPos.y, playerPos.z };
+    float spawnDistance = 60.0f;
+    Vector3 spawnPos = { playerPos.x + spawnDistance, playerPos.y, playerPos.z };
 
     Vector3 roadPos;
     float roadHeading;
@@ -213,7 +210,7 @@ void OdriscollsVehicleSpawn() {
 
         Vector3 roadDir = { -BUILTIN::SIN(roadHeading), BUILTIN::COS(roadHeading), 0.0f };
 
-        if (distanceBetween1(directionVec, roadDir) < 0.0f) {
+        if (CalculateDistance(directionVec, roadDir) < 0.0f) {
             roadHeading += 60.0f;
         }
     } else {
@@ -226,57 +223,49 @@ void OdriscollsVehicleSpawn() {
         return;
     }
 
-    std::vector<int> wagon = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-    if (wagon.empty()) {
-        return;
-    }
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::uniform_int_distribution<> dist(0, wagon.size() - 1);
-    int indexChosen = wagon[dist(g)];
+    std::vector<int> wagonOptions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    int indexChosen = wagonOptions[rand() % wagonOptions.size()];
     Entity vehicle;
 
     switch (indexChosen) {
     case 1:
-        vehicle = spawnVehicle(VehicleHash::Gatchuck, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::UtillwagExplosives);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Gatchuck, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::UtillwagExplosives);
         break;
     case 2:
-        vehicle = spawnVehicle(VehicleHash::Wagon04X, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage2);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Wagon04X, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage2);
         break;
     case 3:
-        vehicle = spawnVehicle(VehicleHash::Wagon02X, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage3);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Wagon02X, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage3);
         break;
     case 4:
-        vehicle = spawnVehicle(VehicleHash::Gatchuck, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::TNT);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Gatchuck, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::TNT);
         break;
     case 5:
-        vehicle = spawnVehicle(VehicleHash::Wagon04X, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage3);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Wagon04X, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage3);
         break;
     case 6:
-        vehicle = spawnVehicle(VehicleHash::Wagon02X, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage1);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Wagon02X, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage1);
         break;
     case 7:
-        vehicle = spawnVehicle(VehicleHash::Gatchuck2, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::ArmyCargo);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Gatchuck2, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::ArmyCargo);
         break;
     case 8:
-        vehicle = spawnVehicle(VehicleHash::Wagon04X, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage1);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Wagon04X, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage1);
         break;
     case 9:
-        vehicle = spawnVehicle(VehicleHash::Wagon02X, roadPos, roadHeading);
-        attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage2);
+        vehicle = VehicleSpawner::spawnVehicle(VehicleHash::Wagon02X, roadPos, roadHeading);
+        VehicleSpawner::attachCargoToVehicle(vehicle, VehicleCargoHash::Luggage2);
         break;
     default:
-        logMessage("Invalid group index.");
+        logMessage("Invalid wagon index.");
         break;
     }
 
@@ -285,62 +274,48 @@ void OdriscollsVehicleSpawn() {
     std::string randomOdriscoll2 = GetRandomOdriscollHash();
     Hash odriscollHash2 = MISC::GET_HASH_KEY(randomOdriscoll2.c_str());
 
-    Ped ped1 = createPed(odriscollHash1, roadPos);
-    Ped ped2 = createPed(odriscollHash2, roadPos);
+    Ped ped1 = QuickDrawImmersion::createPed(odriscollHash1, roadPos);
+    Ped ped2 = QuickDrawImmersion::createPed(odriscollHash2, roadPos);
 
     createOdriscollGroup(ped1, ped2, true);
     personalityPed(ped1);
     personalityPed(ped2);
     ConfigurePedVehicleInteraction(ped1);
     ConfigurePedVehicleInteraction(ped2);
-    ManagePedBlip(vehicle, player);
+    ManagePedBlip(vehicle, PLAYER::PLAYER_ID());
 
     PED::SET_PED_INTO_VEHICLE(ped1, vehicle, -1);
     PED::SET_PED_INTO_VEHICLE(ped2, vehicle, -2);
 
     if (ENTITY::DOES_ENTITY_EXIST(ped1) && !ENTITY::IS_ENTITY_DEAD(ped1) &&
         ENTITY::DOES_ENTITY_EXIST(vehicle) && !ENTITY::IS_ENTITY_DEAD(vehicle)) {
+
         Vector3 ped1Coords = ENTITY::GET_ENTITY_COORDS(ped1, true, false);
         logMessage("Ped 1 coordinates captured.");
 
-        float distanciaMaxima = 1500.0f;
-        float distanciaMinima = 500.0f;
-        float distancia = 0.0f;
-        int tentativasMax = 25;
-        int tentativaAtual = 0;
-        std::pair<std::string, Vector3> destino;
+        Vector3 destination;
+        const float distanciaMaxima = 1500.0f;
+        const float distanciaMinima = 500.0f;
 
-        while (tentativaAtual < tentativasMax) {
-            WAIT(100);
-            destino = GetRandomCoord();
-            distancia = CalculateDistance(ped1Coords, destino.second);
-            logMessage("Attempt " + std::to_string(tentativaAtual) + ": Checking distance for generated coordinate.");
-            if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
-                logMessage("Coordinate found within valid range.");
-                break;
-            }
-            tentativaAtual++;
-        }
-
-        if (distancia >= distanciaMinima && distancia <= distanciaMaxima) {
-            float x = destino.second.x;
-            float y = destino.second.y;
-            float z = destino.second.z;
-
-            if (PATHFIND::IS_POINT_ON_ROAD(x, y, z, ped1)) {
-                logMessage("Point is navigable, moving Ped 1.");
-
-                TASK::TASK_VEHICLE_DRIVE_TO_DESTINATION(ped1, vehicle, x, y, z, 3.0f, 2621463, 6, 3.0f, 5.0f, false);
-
+        if (FindValidDestination(ped1Coords, distanciaMinima, distanciaMaxima, destination)) {
+            if (PATHFIND::IS_POINT_ON_ROAD(destination.x, destination.y, destination.z, ped1)) {
+                logMessage("Point is navigable, moving vehicle with Ped 1.");
+                TASK::TASK_VEHICLE_DRIVE_TO_DESTINATION(ped1, vehicle, destination.x, destination.y, destination.z, 3.0f, 2621463, 6, 3.0f, 5.0f, false);
             } else {
-                logMessage("NavMesh path query failed for ped1. Deleting entities and restarting.");
-
+                logMessage("NavMesh path query failed. Deleting entities and restarting.");
                 ENTITY::DELETE_ENTITY(&ped1);
                 ENTITY::DELETE_ENTITY(&ped2);
                 ENTITY::DELETE_ENTITY(&vehicle);
-                WAIT(2000);
                 OdriscollsVehicleSpawn();
+                return;
             }
+        } else {
+            logMessage("No valid destination found. Deleting entities and restarting.");
+            ENTITY::DELETE_ENTITY(&ped1);
+            ENTITY::DELETE_ENTITY(&ped2);
+            ENTITY::DELETE_ENTITY(&vehicle);
+            OdriscollsVehicleSpawn();
+            return;
         }
     }
 
