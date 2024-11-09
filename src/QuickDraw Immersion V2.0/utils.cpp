@@ -58,6 +58,13 @@ bool DeleteEntitiesOnCondition(std::vector<Entity>& entities, float maxDistance,
             continue;
         }
 
+        // Se a entidade for um cavalo e o assento estiver livre, deletar o cavalo
+        if (PED::IS_PED_HUMAN(*it) == false && PED::_IS_MOUNT_SEAT_FREE(*it, -1)) {
+            ENTITY::DELETE_ENTITY(&(*it));
+            it = entities.erase(it);
+            continue;
+        }
+
         // Se a entidade atender às condições para exclusão, remove do vetor
         if (ShouldDeleteEntity(*it, playerPed, pedStopTimes)) {
             it = entities.erase(it);

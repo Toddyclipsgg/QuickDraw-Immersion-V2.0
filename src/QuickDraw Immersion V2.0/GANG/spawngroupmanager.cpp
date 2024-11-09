@@ -5,10 +5,6 @@
 #define TEST_SPAWN 0
 #define PRODUCT_FINAL 1
 
-// Define membro plus/free
-#define MEMBER_PLUSGANG 1
-#define MEMBER_FREEGANG 0
-
 #pragma warning(disable:4267)
 
 void spawnGroupManager() {
@@ -33,12 +29,7 @@ void spawnGroupManager() {
     }
 
     std::vector<int> group;
-
-#if MEMBER_PLUSGANG
-    group = { 1, 2, 3 };  // Índices das funções
-#elif MEMBER_FREEGANG
-    group = { 1, 2 };  // Índices das funções
-#endif // MEMBER_PLUSGANG / MEMBER_FREEGANG
+    group = { 1, 2};  // Índices das funções
 
     if (group.empty()) {
         return;
@@ -59,14 +50,6 @@ void spawnGroupManager() {
     case 2:
         logMessage("Lemoyne starting...");
         OdriscollsVehicleSpawn();
-        break;
-    case 3:
-        logMessage("Lemoyne starting...");
-        LemoyneMountSpawn();
-        break;
-    case 4:
-        logMessage("Skinner starting...");
-        SkinnerMountSpawn();
         break;
     default:
         logMessage("Invalid group index.");

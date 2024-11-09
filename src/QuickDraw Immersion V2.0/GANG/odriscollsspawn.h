@@ -58,3 +58,5 @@ static std::vector<std::string> bronte = {
 void OdriscollsMountSpawn();
 std::string GetRandomOdriscollHash();
 extern void OdriscollsVehicleSpawn();
+void OdriscollsFootSpawn();
+void SpawnMountedAssassins();

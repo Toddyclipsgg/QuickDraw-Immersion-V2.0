@@ -5,7 +5,7 @@
 std::vector<Entity> globalEntityList;
 std::vector<Entity> vehicleEntityList;
 
-// Função principal chamada a cada frame
+// Atualizar MainLoop
 void MainLoop() {
     startLogThread();
 
@@ -15,31 +15,33 @@ void MainLoop() {
     }
 }
 
-// Função da thread adicional
+// Atualizar AdditionalThread1
 void AdditionalThread1() {
     BUILTIN::SET_THIS_THREAD_PRIORITY(0);
     Ped player = PLAYER::PLAYER_PED_ID();
-    printStartMod();
+                printStartMod();
 
     while (true) {
-        if (IsKeyJustUp(0x34)) {
-            OdriscollsVehicleSpawn();
-        }
+
+                if (IsKeyJustUp(0x34)) {
+                    OdriscollsVehicleSpawn();
+                }
 
 #if DEBUG_COORD
-        DisplayPlayerCoordinatesPanel();
+                DisplayPlayerCoordinatesPanel();
 #endif
 
-        startmenu();
-        checkKeyPress();
-        handleTabKey();
-        removeAimAssist(player);
-        setAccuracyTo100(player);
+                startmenu();
+                checkKeyPress();
+                handleTabKey();
+                removeAimAssist(player);
+                setAccuracyTo100(player);
+        
         WAIT(0);
     }
 }
 
-// Função da thread adicional
+// Atualizar AdditionalThread2
 void AdditionalThread2() {
     while (true) {
         DeleteEntitiesOnCondition(globalEntityList, 100.0f, true);
@@ -47,13 +49,15 @@ void AdditionalThread2() {
     }
 }
 
-// Função de entrada do script
+// Atualizar ScriptMain
 void ScriptMain() {
     srand(GetTickCount());
 
 #if INJECTION_CONSOLE_ENABLE
     AllocConsole();
+    #pragma warning(disable: 4996)
     freopen("CONOUT$", "w", stdout);
+    #pragma warning(default: 4996)
 #endif
 
     initLog();

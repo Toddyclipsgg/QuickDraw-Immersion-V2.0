@@ -20,7 +20,9 @@ namespace QuickDrawImmersion {
     
         static std::random_device rd;
         static std::mt19937 gen(rd());
+        #pragma warning(disable: 4267)
         std::uniform_int_distribution<> dis(0, hashList.size() - 1);
+        #pragma warning(default: 4267)
     
         return hashList[dis(gen)];
     }

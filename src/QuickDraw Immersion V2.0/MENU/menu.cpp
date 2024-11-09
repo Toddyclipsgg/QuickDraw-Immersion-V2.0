@@ -15,12 +15,12 @@ bool isTimePaused = false; // Inicia com false, pois o tempo não está pausado 
 
 void OpenWebsite() {
     const char* url = "https://www.patreon.com/c/toddyclipsgg"; // Defina aqui o site que você quer abrir
-    ShellExecute(0, "open", url, NULL, NULL, SW_SHOWNORMAL); // Abre o navegador no site
+    ShellExecuteA(0, "open", url, NULL, NULL, SW_SHOWNORMAL); // Abre o navegador no site
 }
 
 void OpenMemberShip() {
     const char* url = "https://www.patreon.com/c/toddyclipsgg/membership"; // Defina aqui o site que você quer abrir
-    ShellExecute(0, "open", url, NULL, NULL, SW_SHOWNORMAL); // Abre o navegador no site
+    ShellExecuteA(0, "open", url, NULL, NULL, SW_SHOWNORMAL); // Abre o navegador no site
 }
 
 // Função para obter a hora atual e atualizar as variáveis

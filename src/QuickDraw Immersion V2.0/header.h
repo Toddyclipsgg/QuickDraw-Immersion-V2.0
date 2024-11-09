@@ -53,12 +53,12 @@ extern std::map<Ped, Blip> pedBlips;
 #include "HASHRANDOM\hashrandom.h"
 #include "GANG\spawngroupmanager.h"
 #include "GANG\odriscollsspawn.h"
-#include "GANG\lemoynespawn.h"
-#include "GANG\skinnerspawn.h"
+#include "GANG\ambush.h"
 #include "MOD\quickdraw.h"
 #include "MOD\setaccuracy.h"
 #include "MOD\twirl.h"
 #include "BLIP\blips.h"
 #include "CREATORVEHICLE\spawnvehicle.h"
+#include "MENU\menu_flutter.h"
 
 #endif // HEADER_H

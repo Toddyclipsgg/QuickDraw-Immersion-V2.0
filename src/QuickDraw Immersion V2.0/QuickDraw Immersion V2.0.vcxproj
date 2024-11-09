@@ -11,9 +11,7 @@
     <ClCompile Include="CREATORPED\creatorped.cpp" />
     <ClCompile Include="CREATORPED\setpresetped.cpp" />
     <ClCompile Include="CREATORVEHICLE\spawnvehicle.cpp" />
-    <ClCompile Include="GANG\lemoynespawn.cpp" />
     <ClCompile Include="GANG\odriscollsspawn.cpp" />
-    <ClCompile Include="GANG\skinnerspawn.cpp" />
     <ClCompile Include="GANG\spawngroupmanager.cpp" />
     <ClCompile Include="HASHRANDOM\hashrandom.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -36,9 +34,7 @@
     <ClInclude Include="CREATORPED\creatorped.h" />
     <ClInclude Include="CREATORPED\setpresetped.h" />
     <ClInclude Include="CREATORVEHICLE\spawnvehicle.h" />
-    <ClInclude Include="GANG\lemoynespawn.h" />
     <ClInclude Include="GANG\odriscollsspawn.h" />
-    <ClInclude Include="GANG\skinnerspawn.h" />
     <ClInclude Include="GANG\spawngroupmanager.h" />
     <ClInclude Include="HASHRANDOM\hashrandom.h" />
     <ClInclude Include="header.h" />

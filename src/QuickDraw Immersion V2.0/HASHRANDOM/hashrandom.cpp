@@ -3,7 +3,9 @@
 #include <chrono>
 
 // Random number generator
+#pragma warning(disable: 4244)
 std::mt19937 randomEngine(std::chrono::steady_clock::now().time_since_epoch().count());
+#pragma warning(default: 4244)
 
 // Lista de cavalos disponíveis para gerar
 std::vector<std::string> availableHorseHashList = horseHashList;
@@ -22,7 +24,9 @@ std::string GetRandomHorseHash() {
 	}
 
 	// Gerar um índice aleatório
+	#pragma warning(disable: 4267)
 	std::uniform_int_distribution<> dist(0, availableHorseHashList.size() - 1);
+	#pragma warning(default: 4267)
 	int randomIndex = dist(randomEngine);
 
 	// Obter o hash correspondente ao índice aleatório

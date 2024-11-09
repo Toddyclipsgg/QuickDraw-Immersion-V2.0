@@ -253,8 +253,6 @@ const std::unordered_map<int32_t, std::string> VehicleComponentHashes = {
 
 namespace VehicleSpawner {
 
-	Vehicle spawnVehicleByName(char* vehicleModel, Vector3 position, float heading = 0);
-	Vehicle spawnVehicleByHash(VehicleHash vehicleHash, Vector3 position, float heading = 0);
 	Vehicle spawnVehicle(Hash modelHash, Vector3 spawnPosition, float heading = 0);
 	void attachCargoToVehicle(Vehicle vehicle, VehicleCargoHash cargoType);
 

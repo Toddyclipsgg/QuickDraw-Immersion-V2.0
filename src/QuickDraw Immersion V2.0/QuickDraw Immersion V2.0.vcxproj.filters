@@ -30,13 +30,7 @@
     <ClCompile Include="CREATORVEHICLE\spawnvehicle.cpp">
       <Filter>creatorvehicle</Filter>
     </ClCompile>
-    <ClCompile Include="GANG\lemoynespawn.cpp">
-      <Filter>gangspawn</Filter>
-    </ClCompile>
     <ClCompile Include="GANG\odriscollsspawn.cpp">
-      <Filter>gangspawn</Filter>
-    </ClCompile>
-    <ClCompile Include="GANG\skinnerspawn.cpp">
       <Filter>gangspawn</Filter>
     </ClCompile>
     <ClCompile Include="GANG\spawngroupmanager.cpp">
@@ -93,13 +87,7 @@
     <ClInclude Include="CREATORVEHICLE\spawnvehicle.h">
       <Filter>creatorvehicle</Filter>
     </ClInclude>
-    <ClInclude Include="GANG\lemoynespawn.h">
-      <Filter>gangspawn</Filter>
-    </ClInclude>
     <ClInclude Include="GANG\odriscollsspawn.h">
-      <Filter>gangspawn</Filter>
-    </ClInclude>
-    <ClInclude Include="GANG\skinnerspawn.h">
       <Filter>gangspawn</Filter>
     </ClInclude>
     <ClInclude Include="GANG\spawngroupmanager.h">
